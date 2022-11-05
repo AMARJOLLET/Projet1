@@ -50,20 +50,22 @@ public class PageRessourcesCriteres extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Annuler\")]")));
     }
 
+    public WebElement boutonCreer(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "_5-box']//td[text() = 'Créer']")));
+    }
+
     // Bouton
     public PageRessourcesCriteresCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
-        WebElement boutonCreer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//table[@id = '" + idCommune + "_5-box']//td[text() = 'Créer']")));
+        WebElement we = boutonCreer(wait, idCommune);
         for (int i = 0; i < 3; i++){
             try {
-                seleniumTools.clickOnElement(wait, boutonCreer);
+                seleniumTools.clickOnElement(wait, we);
                 LOGGER.info("Click bouton créer OK");
                 break;
             } catch (ElementClickInterceptedException e){
                 LOGGER.info("Element intercepté -- retry");
             }
         }
-
         return new PageRessourcesCriteresCreer(driver);
     }
 
@@ -124,7 +126,8 @@ public class PageRessourcesCriteres extends AbstractFullPage {
 
     // Nettoyage
     public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']"));
+        WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']")));
         seleniumTools.clickOnElement(wait, boutonSupprimer);
         WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
         seleniumTools.clickOnElement(wait, acceptSuppression);

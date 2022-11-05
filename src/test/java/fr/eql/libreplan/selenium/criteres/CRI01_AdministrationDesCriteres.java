@@ -83,7 +83,6 @@ public class CRI01_AdministrationDesCriteres extends AbstractTestSelenium {
         pageRessourcesCriteres.verificationNettoyageTableau(wait, idCommune,
                 nomAnnuler,nomEnregistrer,nomContinuer,nomModifier);
         LOGGER.info("Elements trouvés -- Suppression ok");
-
         PageRessourcesCriteresCreer pageRessourcesCriteresCreer = pageRessourcesCriteres.cliquerBoutonCreer(wait, idCommune);
         LOGGER.info("Accès à la page de créatiopn");
         idCommune = outilsProjet.retournerIdCommune(wait);

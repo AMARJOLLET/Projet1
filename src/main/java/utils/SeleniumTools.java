@@ -1,9 +1,6 @@
 package utils;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -49,6 +46,26 @@ public class SeleniumTools extends Snapshot {
             snapshot(className, e);
         }
     }
+
+    public void sendKeysCharOneByOne(WebDriverWait wait, WebElement we, String s) throws Throwable {
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(we));
+            we.clear();
+            Actions actions = new Actions(driver);
+
+            for (int i = 0; i < s.length(); i++) {
+                if (i == 1) {
+                    actions.sendKeys(Keys.ARROW_RIGHT).build().perform();
+                }
+                char c = s.charAt(i);
+                String st = String.valueOf(c);
+                we.sendKeys(st);
+            }
+        } catch (Throwable e) {
+            snapshot(className, e);
+        }
+    }
+
 
     public void mouseOver(WebDriverWait wait, WebElement we) throws Throwable {
         try {
