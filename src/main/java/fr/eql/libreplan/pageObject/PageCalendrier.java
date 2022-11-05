@@ -1,6 +1,7 @@
 package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
+import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesJoursExceptionnels;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -54,6 +55,18 @@ public class PageCalendrier extends AbstractFullPage{
         seleniumTools.clickOnElement(wait, getHeader().ressourcesCalendrierButton(wait,idCommune));
         return new PageRessourcesCalendrier(driver);
     }
+
+    public PageRessourcesJoursExceptionnels cliquerRessourcesJoursExceptionnels(WebDriverWait wait, String idCommune) throws Throwable {
+        LOGGER.info("Mouseover sur le bouton ressources");
+        seleniumTools.mouseOver(wait, getHeader().ressourcesButton(wait,idCommune));
+        LOGGER.info("Mouseover sur le bouton Jours Exceptionnels");
+        seleniumTools.mouseOver(wait, getHeader().ressourcesJoursExceptionnelsButton(wait,idCommune));
+        LOGGER.info("Click sur le bouton Jours Exceptionnels");
+        seleniumTools.clickOnElement(wait, getHeader().ressourcesJoursExceptionnelsButton(wait,idCommune));
+        return new PageRessourcesJoursExceptionnels(driver);
+    }
+
+
 
 
 }
