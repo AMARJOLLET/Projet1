@@ -53,4 +53,9 @@ public class HeaderPage extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "y-a")));
     }
 
+    public WebElement ressourcesCalendrierButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "w-a")));
+    }
+
+
 }

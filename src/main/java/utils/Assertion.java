@@ -43,5 +43,14 @@ public class Assertion extends Snapshot {
         }
     }
 
+    public void verifyTrue(boolean condition, String message) throws Throwable {
+        try{
+            assertTrue(condition, message);
+        } catch (Throwable e){
+            snapshot(className, e);
+        }
+    }
+
+
 
 }

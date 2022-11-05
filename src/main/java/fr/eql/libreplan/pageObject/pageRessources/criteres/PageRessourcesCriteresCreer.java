@@ -1,9 +1,9 @@
-package fr.eql.libreplan.pageObject;
+package fr.eql.libreplan.pageObject.pageRessources.criteres;
 
+import fr.eql.libreplan.pageObject.AbstractFullPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,42 +11,59 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PageRessourcesCriteresCreer extends AbstractFullPage{
+public class PageRessourcesCriteresCreer extends AbstractFullPage {
     public PageRessourcesCriteresCreer(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
     }
 
+    // Message Création
+    public String messageCreation(WebDriverWait wait, String nom){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]"))).getText();
+    }
 
     // Titre
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "15-cnt"))).getText();
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "15-cnt"))).getText();
     }
 
     public String titreFormulaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "45-hm"))).getText();
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "45-hm"))).getText();
     }
 
 
-    //Bouton
+    // WebElement Bouton
     public WebElement boutonEnregistrer(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "h6-box")));
     }
+
 
     public WebElement boutonSauverEtContinuer(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i6-box")));
     }
 
+
     public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j6-box")));
     }
 
+    // Methode clique sur Bouton
     public PageRessourcesCriteres cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
         return new PageRessourcesCriteres(driver);
     }
 
-    // Formulaire
+    public PageRessourcesCriteres cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
+        return new PageRessourcesCriteres(driver);
+    }
+
+    public void cliquerBoutonSauverEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonSauverEtContinuer(wait, idCommune));
+    }
+
+    // Formulaire WebElement
     public List<String> listLibelleFormulaire(WebDriverWait wait, String idCommune){
         List<String> strListLibelle = new ArrayList<>();
         List<WebElement> listLibelle = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//tbody[@id='"+ idCommune + "b5']//span[@class='z-label']")));
@@ -78,6 +95,13 @@ public class PageRessourcesCriteresCreer extends AbstractFullPage{
 
     public WebElement inputDescription(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t5")));
+    }
+
+
+    // Formulaire Methodes
+    public void remplirNomFormulaire(WebDriverWait wait, String idCommune, String nom) throws Throwable {
+        LOGGER.info("Renseigne le nom par : " + nom);
+        seleniumTools.sendKey(wait, inputNom(wait, idCommune),nom);
     }
 
     public void remplirFormulaire(WebDriverWait wait, String idCommune,

@@ -17,8 +17,9 @@ public class OutilsProjet extends Logging {
     Logger LOGGER = LoggerFactory.getLogger(className);
 
 
-    public Map<String, String> chargementCSVJDD(String fileName) throws IOException {
-        String csvFilePath = "src/main/resources/JDD/csv/" + fileName + ".csv";
+    public Map<String, String> chargementCSVJDD(String classPackage, String className) throws IOException {
+        String classPath = classPackage.replace(".", "/");
+        String csvFilePath = "src/main/resources/JDD/csv/" + classPath + "/" + className + ".csv";
         Map<String, String> jdd = new HashMap<>();
         LOGGER.info("---------- Fichier JDD chargé : " + csvFilePath + " ----------");
         List<String[]> list =
@@ -37,19 +38,20 @@ public class OutilsProjet extends Logging {
         return jdd;
     }
 
-    public ArrayList<Map<String, String>> loadCsvSeveralJDD (String fileName) throws IOException {
-        String csvFilePath = "src/main/resources/JDD/csv/" + fileName + ".csv";
+    public ArrayList<Map<String, String>> loadCsvSeveralJDD (String classPackage, String className) throws IOException {
+        String classPath = classPackage.replace(".", "/");
+        String csvFilePath = "src/main/resources/JDD/csv/" + classPath + "/" + className + ".csv";
         ArrayList<Map<String, String>> listJDD = new ArrayList<>();
         LOGGER.info("---------- Fichier JDD chargé : " + csvFilePath + " ----------");
         List<String[]> list =
                 Files.lines(Paths.get(csvFilePath))
                         .map(line -> line.split("\\\\r?\\\\n"))
                         .collect(Collectors.toList());
-        for (int j = 1; j < list.size(); j++) {
+        for (int j = 0; j < list.size(); j += 2) {
             Map<String, String> jdd = new HashMap<>();
 
-            String[] titres = list.get(0)[0].split(",");
-            String[] val = list.get(j)[0].split((","));
+            String[] titres = list.get(j)[0].split(",");
+            String[] val = list.get(j+1)[0].split((","));
             for (int i = 0; i < titres.length; i++) {
                 jdd.put(titres[i], val[i]);
             }

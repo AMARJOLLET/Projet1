@@ -19,12 +19,13 @@ public abstract class AbstractTestSelenium extends Logging {
     protected int implicitWaitingTime = 2;
     protected int explicitWaitingTime = 10;
 
-    // LOGGER
-    OutilsProjet outilsProjet = new OutilsProjet();
-    InstanciationDriver instanciationDriver;
-    SeleniumTools seleniumTools;
-    Assertion assertion;
-    Snapshot snapshot;
+    // instantiation
+    protected OutilsProjet outilsProjet = new OutilsProjet();
+    protected InstanciationDriver instanciationDriver;
+    protected SeleniumTools seleniumTools;
+    protected Assertion assertion;
+    protected Snapshot snapshot;
+    protected MethodesProjet methodesProjet;
 
     // Variable
     String navigateur = "chrome";
@@ -58,12 +59,16 @@ public abstract class AbstractTestSelenium extends Logging {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWaitingTime));
         wait = new WebDriverWait(driver, Duration.ofSeconds(explicitWaitingTime));
+        LOGGER.info("Setup wait et driver effectué");
+
+        LOGGER.info("instantiation des classes avec driver");
         instanciationDriver = new InstanciationDriver(driver);
         seleniumTools = new SeleniumTools(driver);
         assertion = new Assertion(driver);
         snapshot = new Snapshot(driver);
+        methodesProjet = new MethodesProjet(driver);
+        LOGGER.info("instantiation des classes effectué");
 
-        LOGGER.info("Setup wait et driver effectué");
     }
 
 
