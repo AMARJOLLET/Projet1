@@ -2,6 +2,7 @@ package fr.eql.libreplan.selenium.gestionDesCalendriers;
 
 import fr.eql.libreplan.pageObject.PageCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesJoursExceptionnels;
+import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesJoursExceptionnelsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,47 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des titres du tableau");
+        List<String> listLibelleTableau = pageRessourcesJoursExceptionnels.recuperationLibelleTableau(idCommune);
+        assertion.verifyEquals("Nom", listLibelleTableau.get(0),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Couleur", listLibelleTableau.get(1),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Sur-affecté", listLibelleTableau.get(2),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Effort standard", listLibelleTableau.get(3),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Effort en heures supplémentaires", listLibelleTableau.get(4),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Opérations", listLibelleTableau.get(5),
+                "Le libelle n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 3 -- Accéder au formulaire de création d'un jour exceptionnel du calendrier");
+        PageRessourcesJoursExceptionnelsCreer pageRessourcesJoursExceptionnelsCreer = pageRessourcesJoursExceptionnels.cliquerBoutonCreer(wait, idCommune);
+        idCommune = outilsProjet.retournerIdCommune(wait);
+        LOGGER.info("Vérification du titre de la page et formulaire");
+        assertion.verifyEquals("Créer Jour du calendrier exceptionnel", pageRessourcesJoursExceptionnelsCreer.titreDeLaPage(wait, idCommune),
+                "Le titre de la page n'est pas celui attendu");
+        assertion.verifyEquals("Modifier", pageRessourcesJoursExceptionnelsCreer.titreFormulaire(wait, idCommune),
+                "Le titre de la page n'est pas celui attendu");
+        LOGGER.info("Récupération des titres du tableau");
+        listLibelleTableau = pageRessourcesJoursExceptionnelsCreer.recuperationLibelleTableau(idCommune);
+        assertion.verifyEquals("Code:", listLibelleTableau.get(0),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Nom", listLibelleTableau.get(1),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Couleur", listLibelleTableau.get(2),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Effort standard", listLibelleTableau.get(3),
+                "Le libelle n'est pas celui attendu");
+        assertion.verifyEquals("Effort supplémentaire", listLibelleTableau.get(4),
+                "Le libelle n'est pas celui attendu");
+
+
+
+
+
+
+
 
 
 

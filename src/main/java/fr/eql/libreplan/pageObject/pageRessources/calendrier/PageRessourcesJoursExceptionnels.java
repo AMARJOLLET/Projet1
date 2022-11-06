@@ -2,11 +2,18 @@ package fr.eql.libreplan.pageObject.pageRessources.calendrier;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
     public PageRessourcesJoursExceptionnels(WebDriver driver) {
@@ -18,6 +25,62 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
     // Titre
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap"))).getText();
+    }
+
+    // WebElement Bouton
+    public WebElement boutonCreer(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "t4-box']//td[text() = 'Créer']")));
+    }
+
+    // Clique Bouton
+    public PageRessourcesJoursExceptionnelsCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
+        WebElement we = boutonCreer(wait, idCommune);
+        for (int i = 0; i < 3; i++){
+            try {
+                seleniumTools.clickOnElement(wait, we);
+                LOGGER.info("Click bouton créer OK");
+                break;
+            } catch (ElementClickInterceptedException e){
+                LOGGER.info("Element intercepté -- retry");
+            }
+        }
+        return new PageRessourcesJoursExceptionnelsCreer(driver);
+    }
+
+
+
+
+    // Tableau
+    public List<String> recuperationLibelleTableau(String idCommune){
+        List<String> listLibelleTableauString = new ArrayList<>();
+        List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tr[@id = '" + idCommune + "m4']/th"));
+        for (WebElement we : listLibelleTableau) {
+            listLibelleTableauString.add(we.getText());
+        }
+        return listLibelleTableauString;
+    }
+
+    // Tableau
+    public Map<String, Map<String, String>> recuperationValeurTableauCalendrier(String idCommune) {
+        // List WebElement
+        List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
+        List<WebElement> listCalendrier = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "_6']/tr"));
+
+        // Map Contenant la map
+        Map<String, Map<String, String>> listMapCalendrierTableau = new HashMap<>();
+
+        LOGGER.info("Début de la récupération - " + listCalendrier.size() + " calendriers detectés ");
+        for (WebElement we : listCalendrier) {
+            Map<String, String> listValeurCalendrier = new HashMap<>();
+            List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[not(@title='Supprimer')]"));
+            for (int j = 0; j < listCritereValeur.size(); j++) {
+                listValeurCalendrier.put(listValeurEnTeteTableau.get(j), listCritereValeur.get(j).getText());
+                LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + listCritereValeur.get(j).getText());
+            }
+            LOGGER.info("Récupération terminé");
+            listMapCalendrierTableau.put(listValeurCalendrier.get("Nom"),listValeurCalendrier);
+        }
+        return listMapCalendrierTableau;
     }
 
 }
