@@ -3,17 +3,12 @@ package fr.eql.libreplan.selenium.gestionDesCalendriers;
 import fr.eql.libreplan.pageObject.PageCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrierCreer;
-import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
     // Chargement JDD
@@ -21,7 +16,6 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
     protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
-    protected String url = "http://192.168.15.10:8090/libreplan";
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
@@ -48,12 +42,14 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         driver.get(url);
 
         PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des calendriers");
+        String idCommune = outilsProjet.retournerIdCommune(wait);
 
-        methodesProjet.AccéderPageAdministrationCalendriers(wait);
+        PageRessourcesCalendrier pageRessourcesCalendrier = pageCalendrier.cliquerRessourcesCalendrier(wait, idCommune);
+        methodesProjet.VerificationPageAdministrationCalendriers(wait);
 
         LOGGER.info("Pas de test 3 -- Créer un calendrier - Accès au formulaire de création");
-        String idCommune = outilsProjet.retournerIdCommune(wait);
-        PageRessourcesCalendrier pageRessourcesCalendrier = new PageRessourcesCalendrier(driver);
+        idCommune = outilsProjet.retournerIdCommune(wait);
         pageRessourcesCalendrier.verificationNettoyageTableauCAL1(wait, idCommune,
                 nomCalendrierDerive,nomCalendrier,nomCalendrierCopier);
         PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCreer(wait, idCommune);
@@ -84,6 +80,7 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Recupération des valeurs du tableau");
         Map<String, Map<String, String>> mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait, idCommune);
+        LOGGER.info("Vérification");
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrier),
                 "Le tableau ne contient pas " + nomCalendrier);
 

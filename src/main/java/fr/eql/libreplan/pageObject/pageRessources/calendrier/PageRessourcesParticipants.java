@@ -14,12 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
-    public PageRessourcesJoursExceptionnels(WebDriver driver) {
+public class PageRessourcesParticipants extends AbstractFullPage {
+    public PageRessourcesParticipants(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
     }
-    // Acces à la page Calendrier
+
+    // Accès à la page Ressource Calendrier
     public PageRessourcesCalendrier cliquerRessourcesCalendrier(WebDriverWait wait, String idCommune) throws Throwable {
         return getHeader().cliquerRessourcesCalendrier(wait, idCommune);
     }
@@ -35,13 +36,44 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
                 ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]"))).getText();
     }
 
+
     // WebElement Bouton
     public WebElement boutonCreer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "t4-box']//td[text() = 'Créer']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "y5-box']//td[text() = 'Créer']")));
+    }
+
+    public WebElement boutonFiltrerPar(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q4-real")));
+    }
+
+    public String libelleFiltrerPar(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n4"))).getText();
+    }
+
+    public WebElement boutonDetailPersonnels(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "d5")));
+    }
+
+    public String libelleDetailPersonnels(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "c5"))).getText();
+    }
+
+    public WebElement boutonPlusOptions(WebDriverWait wait, String idCommune){
+        //return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@id = '" + idCommune + "n5-chdex]//tbody")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "f5-cnt")));
+
+    }
+
+    public WebElement boutonFiltre(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n5-box")));
+    }
+
+    public WebElement boutonModifierParticipant(WebDriverWait wait, String nomParticipant){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomParticipant + "']/ancestor::tr//span[@title='Modifier']")));
     }
 
     // Clique Bouton
-    public PageRessourcesJoursExceptionnelsCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
+    public PageRessourcesParticipantsCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
         WebElement we = boutonCreer(wait, idCommune);
         for (int i = 0; i < 3; i++){
             try {
@@ -52,16 +84,18 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
                 LOGGER.info("Element intercepté -- retry");
             }
         }
-        return new PageRessourcesJoursExceptionnelsCreer(driver);
+        return new PageRessourcesParticipantsCreer(driver);
     }
 
-
-
+    public PageRessourcesParticipantsCreer cliquerModifierParticipant(WebDriverWait wait, String nomParticipant) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonModifierParticipant(wait, nomParticipant));
+        return new PageRessourcesParticipantsCreer(driver);
+    }
 
     // Tableau
     public List<String> recuperationLibelleTableau(String idCommune){
         List<String> listLibelleTableauString = new ArrayList<>();
-        List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tr[@id = '" + idCommune + "m4']/th"));
+        List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tr[@id = '" + idCommune + "r5']/th"));
         for (WebElement we : listLibelleTableau) {
             listLibelleTableauString.add(we.getText());
         }
@@ -69,10 +103,10 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
     }
 
     // Tableau
-    public Map<String, Map<String, String>> recuperationValeurTableauJourExceptionnel(String idCommune) {
+    public Map<String, Map<String, String>> recuperationValeurTableauParticipant(String idCommune) {
         // List WebElement
         List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
-        List<WebElement> listTableau = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "_6']/tr"));
+        List<WebElement> listTableau = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "lf']/tr"));
 
         // Map Contenant la map
         Map<String, Map<String, String>> listMapCalendrierTableau = new HashMap<>();
@@ -86,7 +120,7 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
                 LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + listCritereValeur.get(j).getText());
             }
             LOGGER.info("Récupération terminé");
-            listMapCalendrierTableau.put(listValeurCalendrier.get("Nom"),listValeurCalendrier);
+            listMapCalendrierTableau.put(listValeurCalendrier.get("Surnom"),listValeurCalendrier);
         }
         return listMapCalendrierTableau;
     }
@@ -101,9 +135,9 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
     }
 
     public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
-                                                 String nom) throws Throwable {
+                                             String nom) throws Throwable {
         LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurTableauCalendrier = recuperationValeurTableauJourExceptionnel(idCommune);
+        Map<String, Map<String, String>> listValeurTableauCalendrier = recuperationValeurTableauParticipant(idCommune);
         LOGGER.info("Vérification de l'absence du JDD dans le tableau");
         if(listValeurTableauCalendrier.containsKey(nom)){
             LOGGER.info("Présence du JDD " + nom);
@@ -111,5 +145,6 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
             LOGGER.info("Suppression effectué");
         }
     }
+
 
 }

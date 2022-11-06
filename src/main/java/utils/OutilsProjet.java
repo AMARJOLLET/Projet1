@@ -92,5 +92,16 @@ public class OutilsProjet extends Logging {
         return idCommune;
     }
 
+    public String ajouterUnAuCode(WebDriverWait wait, String code){
+        String codeRemplacer = code.substring(code.length() - 4);
+        int codePlusUn = Integer.parseInt(codeRemplacer) + 1;
+        String codePlusUnString = String.valueOf(codePlusUn);
+        while (codePlusUnString.length() < 4){
+            codePlusUnString = "0" + codePlusUnString;
+        }
+        code = code.replace(codeRemplacer, codePlusUnString);
+        return code;
+    }
+
 }
 

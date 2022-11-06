@@ -7,10 +7,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
     public PageRessourcesJoursExceptionnelsCreer(WebDriver driver) {
@@ -21,14 +24,50 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
 
     // Titre
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap"))).getText();
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "v4-cnt"))).getText();
     }
 
     public String titreFormulaire(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "y4-hm"))).getText();
     }
 
-    // WebElement
+    // Message d'alerte
+    public WebElement messageAlerteDonneeObligatoire(){
+        return driver.findElement(By.xpath("//div[@class=\"z-errbox-center\"]"));
+    }
+    public String messageAlerteDonneeObligatoireText(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-errbox-center\"]"))).getText();
+    }
+
+    // WebElement Bouton
+    public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"z5-box")));
+    }
+
+    public WebElement boutonEnregistrer(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"x5-box")));
+    }
+
+    public WebElement boutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"y5-box")));
+    }
+
+    // Methode Bouton
+    public PageRessourcesJoursExceptionnels cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
+        return new PageRessourcesJoursExceptionnels(driver);
+    }
+
+    public PageRessourcesJoursExceptionnels cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
+        return new PageRessourcesJoursExceptionnels(driver);
+    }
+
+    public void cliquerBoutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
+    }
+
+    // WebElement FORMULAIRE
     public WebElement inputCode(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune+"85")));
     }
@@ -45,6 +84,14 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"g5")));
     }
 
+    public WebElement couleurFonce(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"h5")));
+    }
+
+    public WebElement couleurClair(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"j5")));
+    }
+
     public List<String> couleurException(WebDriverWait wait, String idCommune){
         List<WebElement> listCouleurException = driver.findElements(By.xpath("//td[@id='"+idCommune+"f5-chdextr']//span"));
         List<String> listCouleurExceptionString = new ArrayList<>();
@@ -55,17 +102,77 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
     }
 
     public WebElement inputEffortStandart(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id("o5-real")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"o5-real")));
+    }
+
+    public WebElement inputEffortStandartMinute(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"p5-real")));
     }
 
     public WebElement inputEffortSupplementaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id("u5-real")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"u5-real")));
+    }
+
+    public WebElement inputEffortSupplementaireMinute(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"v5-real")));
+    }
+
+    public WebElement checkboxEffortSupplementaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"w5-real")));
+
+    }
+
+    public Map<String, String> correspondanceCouleurCss(){
+        Map<String, String> mapCouleurCss = new HashMap<>();
+
+        mapCouleurCss.put("orange foncé","rgba(255, 183, 51, 1)");
+        mapCouleurCss.put("orange clair","rgba(255, 219, 153, 1)");
+        mapCouleurCss.put("magenta foncé","rgba(255, 51, 255, 1)");
+        mapCouleurCss.put("magenta clair","rgba(255, 153, 255, 1)");
+        mapCouleurCss.put("bleu foncé","rgba(51, 51, 255, 1)");
+        mapCouleurCss.put("bleu clair","rgba(153, 153, 255, 1)");
+        mapCouleurCss.put("vert foncé","rgba(46, 230, 46, 1)");
+        mapCouleurCss.put("vert clair","rgba(138, 230, 138, 1)");
+        mapCouleurCss.put("jaune foncé","rgba(230, 230, 46, 1)");
+        mapCouleurCss.put("jaune clair","rgba(230, 230, 161, 1)");
+        mapCouleurCss.put("violet foncé","rgba(128, 26, 128, 1)");
+        mapCouleurCss.put("violet clair","rgba(179, 142, 179, 1)");
+        mapCouleurCss.put("noir foncé","rgba(51, 51, 51, 1)");
+        mapCouleurCss.put("noir clair","rgba(153, 153, 153, 1)");
+        mapCouleurCss.put("rouge (par défaut) foncé","rgba(255, 51, 51, 1)");
+        mapCouleurCss.put("rouge (par défaut) clair","rgba(255, 153, 153, 1)");
+        mapCouleurCss.put("cyan foncé","rgba(51, 255, 255, 1)");
+        mapCouleurCss.put("cyan clair","rgba(153, 255, 255, 1)");
+        return mapCouleurCss;
+    }
+
+    // Tableau
+    public void renseignerEffort(WebDriverWait wait, String idCommune, WebElement weSendKey, String valeurEffort) throws Throwable {
+        seleniumTools.sendKey(wait, weSendKey, valeurEffort);
+        seleniumTools.clickOnElement(wait, inputNom(wait, idCommune));
     }
 
 
 
 
-    // Tableau
+    public Map<String, List<String>> recuperationCouleurDisponible(WebDriverWait wait, String idCommune){
+        List<WebElement> couleurWe = selectCouleur(wait,idCommune).findElements(By.xpath("./option"));
+        Map<String, String> mapCouleurCss = correspondanceCouleurCss();
+        Map<String, List<String>> recuperationCouleurCss = new HashMap<>();
+
+        for(WebElement we : couleurWe){
+            List<String> listCouleurCss = new ArrayList<>();
+            for(int i = 0; i < 1; i++){
+                listCouleurCss.add(mapCouleurCss.get(we.getText() + " foncé"));
+                listCouleurCss.add(mapCouleurCss.get(we.getText() + " clair"));
+            }
+            recuperationCouleurCss.put(we.getText(), listCouleurCss);
+        }
+        return recuperationCouleurCss;
+    }
+
+
+
     public List<String> recuperationLibelleTableau(String idCommune){
         List<String> listLibelleTableauString = new ArrayList<>();
         List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tbody[@id='"+idCommune+"45']//div/span"));

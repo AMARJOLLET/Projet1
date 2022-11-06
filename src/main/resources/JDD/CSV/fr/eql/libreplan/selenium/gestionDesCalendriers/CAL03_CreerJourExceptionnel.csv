@@ -1,2 +1,6 @@
 username,password
 admin,admin
+nom,couleur,nombreEffortStandartHeure,nombreEffortStandartMinute,nombreEffortSupplementaireHeure,nombreEffortSupplementaireMinute
+Jour Exceptionnel - Test,orange,1,1,5,3
+nomCalendrier, codeCalendrier
+Calendrier - Test Jour Exceptionnel, true

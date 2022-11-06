@@ -1,0 +1,6 @@
+username,password
+admin,admin
+Nom d'unité,Actif,Valeur maximum par défaut,Précision,Type,Pourcentage
+Type avancement - Test 1,false,10.00,0.1000,User,false
+Nom d'unité,Actif,Valeur maximum par défaut,Précision,Type,Pourcentage
+Type avancement - Test 2,true,100.00,0.1000,User,true

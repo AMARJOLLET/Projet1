@@ -31,13 +31,9 @@ public class MethodesProjet extends InstanciationDriver {
 
 
 
-    public void AccéderPageAdministrationCalendriers(WebDriverWait wait) throws Throwable {
-        LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des calendriers");
-        PageCalendrier pageCalendrier = new PageCalendrier(driver);
+    public void VerificationPageAdministrationCalendriers(WebDriverWait wait) throws Throwable {
+        PageRessourcesCalendrier pageRessourcesCalendrier = new PageRessourcesCalendrier(driver);
         String idCommune = outilsProjet.retournerIdCommune(wait);
-
-        PageRessourcesCalendrier pageRessourcesCalendrier = pageCalendrier.cliquerRessourcesCalendrier(wait, idCommune);
-        idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page d'administration des calendriers");
         assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
@@ -52,5 +48,18 @@ public class MethodesProjet extends InstanciationDriver {
                 "Le libellé est incorrect");
         assertion.verifyEquals("Opérations", listLibelleTableau.get(3),
                 "Le libellé est incorrect");
+        LOGGER.info("Vérification du bouton Créer");
+        assertion.verifyEquals("Créer", pageRessourcesCalendrier.boutonCreer(wait, idCommune).getText(),
+                "Le bouton créer n'est pas celui attendu");
+    }
+
+    public PageRessourcesCalendrier creationCalendrier(WebDriverWait wait, String idCommune, String nomCalendrier, boolean codeCalendrier) throws Throwable {
+        PageRessourcesCalendrier pageRessourcesCalendrier = new PageRessourcesCalendrier(driver);
+        PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCreer(wait, idCommune);
+        LOGGER.info("Remplissage du formulaire");
+        pageRessourcesCalendrierCreer.remplirFormulaire(wait, idCommune, nomCalendrier, codeCalendrier);
+        LOGGER.info("Enregistrement du formulaire");
+        pageRessourcesCalendrier = pageRessourcesCalendrierCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        return new PageRessourcesCalendrier(driver);
     }
 }

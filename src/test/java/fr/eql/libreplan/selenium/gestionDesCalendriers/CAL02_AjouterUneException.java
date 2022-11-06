@@ -18,7 +18,6 @@ public class CAL02_AjouterUneException extends AbstractTestSelenium {
     protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
-    protected String url = "http://192.168.15.10:8090/libreplan";
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
@@ -46,22 +45,21 @@ public class CAL02_AjouterUneException extends AbstractTestSelenium {
         driver.get(url);
 
         PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
-
-        methodesProjet.AccéderPageAdministrationCalendriers(wait);
-        LOGGER.info("Pas de test 3 -- Créer une exception - Accès au formulaire de modification");
-        PageRessourcesCalendrier pageRessourcesCalendrier = new PageRessourcesCalendrier(driver);
+        LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des calendriers");
         String idCommune = outilsProjet.retournerIdCommune(wait);
+
+        PageRessourcesCalendrier pageRessourcesCalendrier = pageCalendrier.cliquerRessourcesCalendrier(wait, idCommune);
+        methodesProjet.VerificationPageAdministrationCalendriers(wait);
+        LOGGER.info("Pas de test 3 -- Créer une exception - Accès au formulaire de modification");
+        idCommune = outilsProjet.retournerIdCommune(wait);
         pageRessourcesCalendrier.verificationNettoyageTableauCAL2(wait, idCommune, nomCalendrier);
         LOGGER.info("Etape supplémentaire -- Creation d'un calendrier");
-        PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCreer(wait, idCommune);
-        LOGGER.info("Remplissage du formulaire");
-        pageRessourcesCalendrierCreer.remplirFormulaire(wait, idCommune, nomCalendrier, codeCalendrier);
-        LOGGER.info("Enregistrement du formulaire");
-        pageRessourcesCalendrier = pageRessourcesCalendrierCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        methodesProjet.creationCalendrier(wait, idCommune, nomCalendrier, codeCalendrier);
         LOGGER.info("Reprise du cas de test -- Modification calendrier");
         idCommune = outilsProjet.retournerIdCommune(wait);
         pageRessourcesCalendrier.cliquerBoutonModifierCalendrier(wait, nomCalendrier);
         LOGGER.info("Acces à la page de modification");
+        PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = new PageRessourcesCalendrierCreer(driver);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page de modification du calendrier et du formulaire");
         assertion.verifyEquals("Modifier Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),

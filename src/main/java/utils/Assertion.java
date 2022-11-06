@@ -2,8 +2,7 @@ package utils;
 
 import org.openqa.selenium.WebDriver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Assertion extends Snapshot {
 
@@ -50,6 +49,15 @@ public class Assertion extends Snapshot {
             snapshot(className, e);
         }
     }
+
+    public void verifyFalse(boolean condition, String message) throws Throwable {
+        try{
+            assertFalse(condition, message);
+        } catch (Throwable e){
+            snapshot(className, e);
+        }
+    }
+
 
 
 

@@ -28,7 +28,9 @@ public abstract class AbstractTestSelenium extends Logging {
     protected MethodesProjet methodesProjet;
 
     // Variable
-    String navigateur = "chrome";
+    protected String navigateur = "chrome";
+    protected String url = "http://192.168.15.10:8090/libreplan";
+
 
 
     @BeforeEach

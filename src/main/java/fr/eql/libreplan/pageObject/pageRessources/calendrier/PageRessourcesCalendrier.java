@@ -17,6 +17,11 @@ public class PageRessourcesCalendrier extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
+    // Accès à la page Participant
+    public PageRessourcesParticipants cliquerRessourcesParticipants(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerRessourcesParticipants(wait, idCommune);
+    }
+
     // Titre
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap"))).getText();

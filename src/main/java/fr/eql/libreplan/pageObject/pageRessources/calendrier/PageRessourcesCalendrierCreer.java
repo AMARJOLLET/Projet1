@@ -1,18 +1,15 @@
 package fr.eql.libreplan.pageObject.pageRessources.calendrier;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
-import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PageRessourcesCalendrierCreer extends AbstractFullPage {
     public PageRessourcesCalendrierCreer(WebDriver driver) {
@@ -142,11 +139,19 @@ public class PageRessourcesCalendrierCreer extends AbstractFullPage {
     }
 
     public WebElement inputEffortNormal(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "l8-real")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath( "//td[@id='"+idCommune+"n6-chdex']//i[@title='Heures']/input")));
+    }
+
+    public WebElement inputEffortNormalMinute(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath( "//td[@id='"+idCommune+"n6-chdex']//i[@title='Minutes']/input")));
     }
 
     public WebElement inputEffortHeuresSupplementaires(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "o8-real")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath( "//td[@id='"+idCommune+"p6-chdex']//i[@title='Heures']/input")));
+    }
+
+    public WebElement inputEffortHeuresSupplementairesMinute(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath( "//td[@id='"+idCommune+"p6-chdex']//i[@title='Minutes']/input")));
     }
 
     // Fonction Exception
@@ -213,6 +218,22 @@ public class PageRessourcesCalendrierCreer extends AbstractFullPage {
         mapValeurException.put("Type", type.getText());
         mapValeurException.put("Temps travaillé", tempsTravaille.getText());
         return mapValeurException;
+    }
+
+    public List<String> recuperationListTypeException(WebDriverWait wait, String idCommune) throws Throwable {
+        // affichage de la comboList
+        WebElement deplierTypeException = driver.findElement(By.id(idCommune+"s6-btn"));
+        seleniumTools.clickOnElement(wait, deplierTypeException);
+
+        // Attente que la list ne soit pas null
+        wait.until((ExpectedCondition<Boolean>) driver -> driver.findElement(By.xpath("//table[@id='" + idCommune + "s6-cave']//tr")).getText().length() != 0);
+
+        List<WebElement> listWeTypeException = driver.findElements(By.xpath("//table[@id='"+idCommune+"s6-cave']//tr"));
+        List<String> listTypeException = new ArrayList<>();
+        for (WebElement we : listWeTypeException){
+            listTypeException.add(we.getText());
+        }
+        return listTypeException;
     }
 
 

@@ -16,7 +16,6 @@ public class CRI01_AdministrationDesCriteres extends AbstractTestSelenium {
     protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
-    protected String url = "http://192.168.15.10:8090/libreplan";
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
