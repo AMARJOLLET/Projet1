@@ -2,8 +2,8 @@ package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesJoursExceptionnels;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesParticipants;
+import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -22,6 +22,14 @@ public class HeaderPage extends AbstractFullPage {
 /*######################################################################################################################
                                                     METHODES
 ######################################################################################################################*/
+
+    // Deconnexion
+    public PageLogin seDeconnecter(WebDriverWait wait) throws Throwable {
+        WebElement deconnexion = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@class=\"user-area\"]//*[contains(@href,'logout')]")));
+        seleniumTools.clickOnElement(wait, deconnexion);
+        return new PageLogin(driver);
+    }
 
     // Calendrier et ses sous-menus
     public WebElement calendrierButton(WebDriverWait wait, String idCommune){
@@ -103,9 +111,9 @@ public class HeaderPage extends AbstractFullPage {
     public PageRessourcesParticipants cliquerRessourcesParticipants(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
-        LOGGER.info("Mouseover sur le bouton Jours Exceptionnels");
+        LOGGER.info("Mouseover sur le bouton Participant");
         seleniumTools.mouseOver(wait, ressourcesParticipantsButton(wait,idCommune));
-        LOGGER.info("Click sur le bouton Jours Exceptionnels");
+        LOGGER.info("Click sur le bouton Participant");
         seleniumTools.clickOnElement(wait, ressourcesParticipantsButton(wait,idCommune));
         return new PageRessourcesParticipants(driver);
     }
@@ -117,9 +125,9 @@ public class HeaderPage extends AbstractFullPage {
     public PageRessourcesAvancement cliquerRessourcesAvancement(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
-        LOGGER.info("Mouseover sur le bouton Jours Exceptionnels");
+        LOGGER.info("Mouseover sur le bouton Avancement");
         seleniumTools.mouseOver(wait, ressourcesAvancementButton(wait,idCommune));
-        LOGGER.info("Click sur le bouton Jours Exceptionnels");
+        LOGGER.info("Click sur le bouton Avancement");
         seleniumTools.clickOnElement(wait, ressourcesAvancementButton(wait,idCommune));
         return new PageRessourcesAvancement(driver);
     }

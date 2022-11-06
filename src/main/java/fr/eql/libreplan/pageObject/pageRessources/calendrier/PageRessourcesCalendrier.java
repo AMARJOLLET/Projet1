@@ -1,6 +1,7 @@
 package fr.eql.libreplan.pageObject.pageRessources.calendrier;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;

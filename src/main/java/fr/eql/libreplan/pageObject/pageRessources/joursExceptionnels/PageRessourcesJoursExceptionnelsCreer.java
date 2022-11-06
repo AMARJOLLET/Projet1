@@ -1,13 +1,11 @@
-package fr.eql.libreplan.pageObject.pageRessources.calendrier;
+package fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;

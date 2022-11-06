@@ -1,0 +1,4 @@
+username,password
+admin,admin
+Code,Prénom,Nom,ID,Type,Utilisateur lié,Nom d'utilisateur,Mot de passe,Email
+true,Jean,DU,jdu,Ressource normale,Créer un nouvel utilisateur,jdu,$jdumdp1,jdu@test.fr

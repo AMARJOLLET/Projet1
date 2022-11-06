@@ -2,8 +2,8 @@ package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesJoursExceptionnels;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesParticipants;
+import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,17 +18,12 @@ public class PageCalendrier extends AbstractFullPage{
         PageFactory.initElements(driver, this);
     }
 
-/*######################################################################################################################
-                                                  WEBELEMENTS
-######################################################################################################################*/
-
-
-/*######################################################################################################################
-													METHODES
-######################################################################################################################*/
-
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f8"))).getText();
+    }
+
+    public String titreDeLaPageUtilisateur(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f0-cap"))).getText();
     }
 
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {

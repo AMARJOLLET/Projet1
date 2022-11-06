@@ -2,8 +2,8 @@ package fr.eql.libreplan.selenium.gestionDesCalendriers;
 
 import fr.eql.libreplan.pageObject.PageCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesParticipants;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesParticipantsCreer;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
 
@@ -64,7 +64,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrier),
                 nomCalendrier + " n'est pas retrouvé dans le tableau des calendriers");
 
-        LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des jours exceptionnels des calendriers");
+        LOGGER.info("Pas de test 2 -- Accéder à la page de gestion des participants ");
         pageRessourcesParticipants = pageRessourcesCalendrier.cliquerRessourcesParticipants(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
@@ -107,7 +107,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Créer un participant", pageRessourcesParticipantsCreer.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
-        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune, nomParticipant, prenomParticipant, idParticipant);
+        pageRessourcesParticipantsCreer.remplirFormulaireMinimun(wait, idCommune, nomParticipant, prenomParticipant, idParticipant);
         LOGGER.info("Enregistrement du participant");
         pageRessourcesParticipants = pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait,idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
@@ -139,7 +139,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Pas de test 4 -- Accéder à l'onglet Calendrier");
         pageRessourcesParticipantsCreer.cliquerOngletCalendrier(wait, idCommune);
         LOGGER.info("Vérification champ Type");
-        assertion.verifyEquals("Dérivé du calendrier Default", pageRessourcesParticipantsCreer.inputType(wait, idCommune).getText(),
+        assertion.verifyEquals("Dérivé du calendrier Default", pageRessourcesParticipantsCreer.inputTypeCalendrier(wait, idCommune).getText(),
                 "Le champ type n'est pas celui attendu");
         LOGGER.info("Vérification Gauche Onglet");
         assertion.verifyEquals("z-calendar", pageRessourcesParticipantsCreer.objetCalendrier(wait, idCommune).getAttribute("class"),
@@ -193,7 +193,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
 
         LOGGER.info("Pas de test 7 -- Vérifier l'affectation du calendrier");
         pageRessourcesParticipantsCreer.cliquerOngletCalendrier(wait, idCommune);
-        assertion.verifyEquals("Dérivé du calendrier " + nomCalendrier, pageRessourcesParticipantsCreer.inputType(wait, idCommune).getText());
+        assertion.verifyEquals("Dérivé du calendrier " + nomCalendrier, pageRessourcesParticipantsCreer.inputTypeCalendrier(wait, idCommune).getText());
 
         LOGGER.info("Fin du test");
 

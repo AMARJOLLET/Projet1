@@ -91,7 +91,7 @@ public class PageRessourcesAvancement extends AbstractFullPage {
     public Map<String, Map<String, String>> recuperationValeurTableauAvancement(String idCommune) {
         // List WebElement
         List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
-        List<WebElement> listAvancement = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "m4']/tr"));
+        List<WebElement> listAvancement = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "o5']/tr"));
 
         // Map Contenant la map
         Map<String, Map<String, String>> listMapAvancementTableau = new HashMap<>();
@@ -122,6 +122,7 @@ public class PageRessourcesAvancement extends AbstractFullPage {
     public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
                                                  String nomJDD1, String nomJDD2) throws Throwable {
         LOGGER.info("Récupération valeurs du tableau");
+        Thread.sleep(500);
         Map<String, Map<String, String>> mapValeurTableau = recuperationValeurTableauAvancement(idCommune);
 
         LOGGER.info("Vérification de l'absence du JDD dans le tableau");
@@ -133,11 +134,9 @@ public class PageRessourcesAvancement extends AbstractFullPage {
         Thread.sleep(500);
         if(mapValeurTableau.containsKey(nomJDD2)){
             LOGGER.info("Présence du JDD " + nomJDD2);
-            supressionJdd(wait, nomJDD1);
+            supressionJdd(wait, nomJDD2);
             LOGGER.info("Suppression effectué");
         }
-
-
     }
 }
 
