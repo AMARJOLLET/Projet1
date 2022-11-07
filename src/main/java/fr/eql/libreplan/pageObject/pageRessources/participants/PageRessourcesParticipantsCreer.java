@@ -25,18 +25,44 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
 /*######################################################################################################################
                                                   WEBELEMENTS
 ######################################################################################################################*/
-    // Bouton
-    public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"bf-box")));
+    // Message Erreur
+    public WebElement messageAlerteDonneeObligatoire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@class='z-errbox z-popup' and not(contains(@style,'display: none'))]//div[@class='z-errbox-center']")));
     }
 
+    public WebElement flecheMessageAlerteDonneeObligatoire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOf(messageAlerteDonneeObligatoire(wait).
+                findElement(By.xpath("./ancestor::div[@title='Allez sur le mauvais champ']"))));
+    }
+
+    public WebElement dismissMessageAlerteDonneeObligatoire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOf(messageAlerteDonneeObligatoire(wait).
+                findElement(By.xpath("./ancestor::div[contains(@class,'z-errbox-close')]"))));
+    }
+
+    public List<WebElement> messageWarning(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class=\"message_WARNING\"]//span")));
+    }
+
+    // Bouton
     public WebElement boutonEnregistrer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "9f-box")));
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@id='"+idCommune+"z5-cave']/span[contains(@class,'save-button')]/table")));
     }
 
     public WebElement boutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"af-box")));
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@id='"+idCommune+"z5-cave']/span[contains(@class,'saveandcontinue-button')]/table")));
     }
+
+    public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@id='"+idCommune+"z5-cave']/span[contains(@class,'cancel-button')]/table")));
+    }
+
+
+
 
     // Formulaire
     //////// LIBELLE
@@ -158,6 +184,13 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
                 ("//div[@class='message_INFO']/span"))).getText();
     }
 
+    // Récupération de l'orientation de la flèche du message d'erreur
+    public String orientationFlecheMessageErreur(WebDriverWait wait){
+        String orientationFleche = flecheMessageAlerteDonneeObligatoire(wait).getAttribute("class");
+        int indexElementAncrage = orientationFleche.indexOf("z-arrow-");
+        return orientationFleche.substring(indexElementAncrage);
+    }
+
     // Cliquer Bouton
     public PageRessourcesParticipants cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
@@ -213,10 +246,10 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, mapUtilisateurLie.get(typeUtilisateur));
     }
 
-    public Map<String, WebElement> mapNouvelUtilisateur(WebDriverWait wait, String idCommune) {
+    public Map<String, WebElement> mapNouvelUtilisateur(WebDriverWait wait) {
         Map<String, WebElement> mapNouvelUtilisateur = new HashMap<>();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i8")));
-        List<WebElement> listNouvelUtilisateur = driver.findElements(By.xpath("//tbody[@id='"+ idCommune + "h8']/tr"));
+        List<WebElement> listNouvelUtilisateur = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "//div[text()='Nouvel utilisateur']/following-sibling::div//div[@class='z-grid-body']//tbody[@class='z-rows']/tr")));
         for(WebElement we : listNouvelUtilisateur) {
             WebElement libelle = we.findElement(By.xpath(".//span"));
             WebElement input = we.findElement(By.xpath(".//input"));
@@ -225,14 +258,15 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         return mapNouvelUtilisateur;
     }
 
-    public void remplirNouvelUtilisateur(WebDriverWait wait, String idCommune, String nomUtilisateur, String mdpUtilisateur, String email) throws Throwable {
-        Map<String, WebElement> mapNouvelUtilisateur = mapNouvelUtilisateur(wait, idCommune);
+    public void remplirNouvelUtilisateur(WebDriverWait wait, String idCommune, String nomUtilisateur, String mdpUtilisateur, String mdpConfirmation, String email) throws Throwable {
+        wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i8")));
+        Map<String, WebElement> mapNouvelUtilisateur = mapNouvelUtilisateur(wait);
         LOGGER.info("Renseigne le nom utilisateur avec : " + nomUtilisateur);
         seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Nom d'utilisateur"), nomUtilisateur);
         LOGGER.info("Renseigne le mdp utilisateur avec : " + mdpUtilisateur);
         seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Mot de passe"), mdpUtilisateur);
-        LOGGER.info("Renseigne la confirmation du mdp utilisateur avec : " + mdpUtilisateur);
-        seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Confirmation du mot de passe"), mdpUtilisateur);
+        LOGGER.info("Renseigne la confirmation du mdp utilisateur avec : " + mdpConfirmation);
+        seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Confirmation du mot de passe"), mdpConfirmation);
         LOGGER.info("Renseigne l'email utilisateur avec : " + email);
         seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Email"), email);
     }
@@ -268,5 +302,7 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         }
         return listCalendrierParent;
     }
+
+
 
 }

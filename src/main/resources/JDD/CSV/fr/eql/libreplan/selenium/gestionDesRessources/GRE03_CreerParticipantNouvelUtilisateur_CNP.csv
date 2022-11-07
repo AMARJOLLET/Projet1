@@ -1,0 +1,8 @@
+username,password
+admin,admin
+Code,Prénom,Nom,ID,Type,Utilisateur lié
+true,Marie,DU,mdu,Ressource normale,Utilisateur existant
+Utilisateur lié,Nom d'utilisateur,Mot de passe,Email
+Créer un nouvel utilisateur,Du,123456,du@test.fr
+Code,Prénom,Nom,ID,Type,Utilisateur lié,Nom d'utilisateur,Mot de passe,Email
+true,Pre,Requis,PreRequis,Ressource normale,Créer un nouvel utilisateur,PreRequis,PreRequis,PreRequis@test.fr

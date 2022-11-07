@@ -102,11 +102,10 @@ public class PageRessourcesAvancement extends AbstractFullPage {
             List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[@class='z-label']"));
             for (int j = 0; j < listCritereValeur.size(); j++) {
                 listValeurCalendrier.put(listValeurEnTeteTableau.get(j), listCritereValeur.get(j).getText());
-                LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + listCritereValeur.get(j).getText());
             }
-            LOGGER.info("Récupération terminé");
             listMapAvancementTableau.put(listValeurCalendrier.get("Nom"),listValeurCalendrier);
         }
+        LOGGER.info("Récupération terminé");
         return listMapAvancementTableau;
     }
 

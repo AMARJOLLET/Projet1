@@ -19,25 +19,15 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
-
-    // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "v4-cnt"))).getText();
-    }
-
-    public String titreFormulaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "y4-hm"))).getText();
-    }
-
+/*######################################################################################################################
+                                                  WEBELEMENTS
+######################################################################################################################*/
     // Message d'alerte
-    public WebElement messageAlerteDonneeObligatoire(){
-        return driver.findElement(By.xpath("//div[@class=\"z-errbox-center\"]"));
-    }
-    public String messageAlerteDonneeObligatoireText(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-errbox-center\"]"))).getText();
+    public WebElement messageAlerteDonneeObligatoire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-errbox-center\"]")));
     }
 
-    // WebElement Bouton
+    // Bouton
     public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"z5-box")));
     }
@@ -50,22 +40,8 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"y5-box")));
     }
 
-    // Methode Bouton
-    public PageRessourcesJoursExceptionnels cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
-        return new PageRessourcesJoursExceptionnels(driver);
-    }
 
-    public PageRessourcesJoursExceptionnels cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
-        return new PageRessourcesJoursExceptionnels(driver);
-    }
-
-    public void cliquerBoutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
-    }
-
-    // WebElement FORMULAIRE
+    // FORMULAIRE
     public WebElement inputCode(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune+"85")));
     }
@@ -90,15 +66,6 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"j5")));
     }
 
-    public List<String> couleurException(WebDriverWait wait, String idCommune){
-        List<WebElement> listCouleurException = driver.findElements(By.xpath("//td[@id='"+idCommune+"f5-chdextr']//span"));
-        List<String> listCouleurExceptionString = new ArrayList<>();
-        for (WebElement we : listCouleurException){
-            listCouleurExceptionString.add(we.getText());
-        }
-        return listCouleurExceptionString;
-    }
-
     public WebElement inputEffortStandart(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"o5-real")));
     }
@@ -119,6 +86,47 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"w5-real")));
 
     }
+
+
+
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
+
+    // Titre
+    public String titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "v4-cnt"))).getText();
+    }
+
+    public String titreFormulaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "y4-hm"))).getText();
+    }
+
+    // Bouton
+    public PageRessourcesJoursExceptionnels cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
+        return new PageRessourcesJoursExceptionnels(driver);
+    }
+
+    public PageRessourcesJoursExceptionnels cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
+        return new PageRessourcesJoursExceptionnels(driver);
+    }
+
+    public void cliquerBoutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
+    }
+
+
+    public List<String> couleurException(WebDriverWait wait, String idCommune){
+        List<WebElement> listCouleurException = driver.findElements(By.xpath("//td[@id='"+idCommune+"f5-chdextr']//span"));
+        List<String> listCouleurExceptionString = new ArrayList<>();
+        for (WebElement we : listCouleurException){
+            listCouleurExceptionString.add(we.getText());
+        }
+        return listCouleurExceptionString;
+    }
+
 
     public Map<String, String> correspondanceCouleurCss(){
         Map<String, String> mapCouleurCss = new HashMap<>();
@@ -150,9 +158,6 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, inputNom(wait, idCommune));
     }
 
-
-
-
     public Map<String, List<String>> recuperationCouleurDisponible(WebDriverWait wait, String idCommune){
         List<WebElement> couleurWe = selectCouleur(wait,idCommune).findElements(By.xpath("./option"));
         Map<String, String> mapCouleurCss = correspondanceCouleurCss();
@@ -169,8 +174,6 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         return recuperationCouleurCss;
     }
 
-
-
     public List<String> recuperationLibelleTableau(String idCommune){
         List<String> listLibelleTableauString = new ArrayList<>();
         List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tbody[@id='"+idCommune+"45']//div/span"));
@@ -179,9 +182,4 @@ public class PageRessourcesJoursExceptionnelsCreer extends AbstractFullPage {
         }
         return listLibelleTableauString;
     }
-
-
-
-
-
 }

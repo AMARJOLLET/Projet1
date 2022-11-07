@@ -210,7 +210,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnelsCreer.renseignerEffort(wait, idCommune, pageRessourcesJoursExceptionnelsCreer.inputEffortStandart(wait,idCommune),
                 nombreIncorrect);
         LOGGER.info("Vérification du message de données obligatoires");
-        assertion.verifyEquals("Dépassement du rang (>= 0).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoireText(wait),
+        assertion.verifyEquals("Dépassement du rang (0 ~ 24).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoire(wait).getText(),
                 "Le message des données obligatoires n'est pas celui attendu");
 
         LOGGER.info("Pas de test 9 -- Sélectionner Effort standard - 2eme valeur non conforme");
@@ -222,7 +222,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnelsCreer.renseignerEffort(wait, idCommune, pageRessourcesJoursExceptionnelsCreer.inputEffortStandartMinute(wait,idCommune),
                 nombreIncorrect);
         LOGGER.info("Vérification du message de données obligatoires");
-        assertion.verifyEquals("Dépassement du rang (0 ~ 59).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoireText(wait),
+        assertion.verifyEquals("Dépassement du rang (0 ~ 59).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoire(wait).getText(),
                 "Le message des données obligatoires n'est pas celui attendu");
 
 
@@ -235,7 +235,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnelsCreer.renseignerEffort(wait, idCommune, pageRessourcesJoursExceptionnelsCreer.inputEffortSupplementaire(wait,idCommune),
                 nombreIncorrect);
         LOGGER.info("Vérification du message de données obligatoires");
-        assertion.verifyEquals("Dépassement du rang (>= 0).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoireText(wait),
+        assertion.verifyEquals("Dépassement du rang (>= 0).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoire(wait).getText(),
                 "Le message des données obligatoires n'est pas celui attendu");
 
         LOGGER.info("Pas de test 11 -- Sélectionner Effort supplémentaire - 2eme valeur non conforme");
@@ -247,7 +247,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnelsCreer.renseignerEffort(wait, idCommune, pageRessourcesJoursExceptionnelsCreer.inputEffortSupplementaireMinute(wait,idCommune),
                 nombreIncorrect);
         LOGGER.info("Vérification du message de données obligatoires");
-        assertion.verifyEquals("Dépassement du rang (0 ~ 59).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoireText(wait),
+        assertion.verifyEquals("Dépassement du rang (0 ~ 59).", pageRessourcesJoursExceptionnelsCreer.messageAlerteDonneeObligatoire(wait).getText(),
                 "Le message des données obligatoires n'est pas celui attendu");
 
 
@@ -284,7 +284,6 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         LOGGER.info("Etape supplémentaire -- Creation d'un calendrier");
         methodesProjet.creationCalendrier(wait, idCommune, nomCalendrier, codeCalendrier);
         LOGGER.info("Reprise du cas de test -- Modification calendrier");
-        idCommune = outilsProjet.retournerIdCommune(wait);
         pageRessourcesCalendrier.cliquerBoutonModifierCalendrier(wait, nomCalendrier);
         LOGGER.info("Acces à la page de modification");
         PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = new PageRessourcesCalendrierCreer(driver);

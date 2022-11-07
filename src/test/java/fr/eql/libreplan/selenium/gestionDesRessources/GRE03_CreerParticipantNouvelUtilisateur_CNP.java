@@ -1,19 +1,20 @@
 package fr.eql.libreplan.selenium.gestionDesRessources;
 
 import fr.eql.libreplan.pageObject.PageCalendrier;
-import fr.eql.libreplan.pageObject.PageLogin;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSelenium {
+public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSelenium {
     // Chargement JDD
     protected String className = getClass().getSimpleName();
     protected String classPackage = this.getClass().getPackage().getName();
@@ -22,19 +23,32 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
-    // JDDD Participant
+    // JDDD Participant 1
     protected String codeParticipant = listJdd.get(1).get("Code");
-    protected boolean checkboxCodeParticiapnt = Boolean.parseBoolean(listJdd.get(1).get("Générer le code"));
+    protected boolean checkboxCodeParticipant = Boolean.parseBoolean(listJdd.get(1).get("Générer le code"));
     protected String nomParticipant = listJdd.get(1).get("Nom");
     protected String prenomParticipant = listJdd.get(1).get("Prénom");
     protected String idParticipant = listJdd.get(1).get("ID");
     protected String typeParticipant = listJdd.get(1).get("Type");
     protected String utilisateurLie = listJdd.get(1).get("Utilisateur lié");
-    protected String nomUtilisateur = listJdd.get(1).get("Nom d'utilisateur");
-    protected String mdpUtilisateur = listJdd.get(1).get("Mot de passe");
-    protected String emailUtilisateur = listJdd.get(1).get("Email");
 
-    public GRE01_CreerParticipant_NouvelUtilisateur() throws IOException {
+    // JDDD Participant NouvelUtilisateur
+    protected String utilisateurLie2 = listJdd.get(2).get("Utilisateur lié");
+    protected String nomUtilisateur = listJdd.get(2).get("Nom d'utilisateur");
+    protected String mdpUtilisateur = listJdd.get(2).get("Mot de passe");
+    protected String emailUtilisateur = listJdd.get(2).get("Email");
+
+    // JDD Participant Pre requis
+    protected boolean checkboxParticipantPreRequis = Boolean.parseBoolean(listJdd.get(3).get("Code"));
+    protected String nomParticipantPreRequis = listJdd.get(3).get("Nom");
+    protected String prenomParticipantPreRequis = listJdd.get(3).get("Prénom");
+    protected String idParticipantPreRequis = listJdd.get(3).get("ID");
+    protected String utilisateurLiePreRequis = listJdd.get(3).get("Utilisateur lié");
+    protected String nomUtilisateurPreRequis = listJdd.get(3).get("Nom d'utilisateur");
+    protected String mdpUtilisateurPreRequis = listJdd.get(3).get("Mot de passe");
+    protected String emailUtilisateurPreRequis = listJdd.get(3).get("Email");
+
+    public GRE03_CreerParticipantNouvelUtilisateur_CNP() throws IOException {
     }
 
     @Test
@@ -81,7 +95,21 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         LOGGER.info("PRE REQUIS DU TEST");
         LOGGER.info("Vérification que le JDD n'est pas présent");
         pageRessourcesParticipants.verificationNettoyageTableauAvecUtilisateur(wait, idCommune, nomParticipant);
-        pageRessourcesParticipants.ajoutParticipant(wait, idCommune);
+        LOGGER.info("Vérification que le JDD pré-requis présent");
+        Thread.sleep(500);
+        Map<String, Map<String, String>> mapValeurTableau = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune);
+        if (!mapValeurTableau.containsKey(nomParticipantPreRequis)){
+            PageRessourcesParticipantsCreer pageRessourcesParticipantsCreer = pageRessourcesParticipants.cliquerBoutonCreer(wait, idCommune);
+            pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                    checkboxParticipantPreRequis, nomParticipantPreRequis, prenomParticipantPreRequis, idParticipantPreRequis, typeParticipant);
+            pageRessourcesParticipantsCreer.remplirUtilisateurLie(wait, idCommune, utilisateurLiePreRequis);
+            pageRessourcesParticipantsCreer.remplirNouvelUtilisateur(wait, idCommune,
+                    nomUtilisateurPreRequis, mdpUtilisateurPreRequis, mdpUtilisateurPreRequis, emailUtilisateurPreRequis);
+            pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+            pageRessourcesParticipantsCreer.titreDeLaPage(wait, idCommune);
+            idCommune = outilsProjet.retournerIdCommune(wait);
+        }
+
 
         LOGGER.info("Pas de test 3 -- Créer un participant - Accès au formulaire de création");
         PageRessourcesParticipantsCreer pageRessourcesParticipantsCreer = pageRessourcesParticipants.cliquerBoutonCreer(wait, idCommune);
@@ -140,15 +168,98 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
                 "Le libellé du bouton n'est pas celui attendu");
 
 
-        LOGGER.info("Pas de test 5 -- Créer un participant - Bouton [Enregistrer]");
-        String codeParticipantRecup = pageRessourcesParticipantsCreer.inputCode(wait, idCommune).getAttribute("value");
-        pageRessourcesParticipantsCreer.remplirFormulaire(wait,idCommune,
-                checkboxCodeParticiapnt, nomParticipant, prenomParticipant, idParticipant, typeParticipant);
+        LOGGER.info("Pas de test 5 -- Créer un participant - Aucune valeur renseignée");
+        pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        LOGGER.info("Vérification de la présence du message de données obligatoires");
+        assertion.verifyEquals("Champ vide non autorisé.\nVous devez spécifier une valeur", pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait).getText(),
+                "Le message d'erreur des données obligatoires n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 6 -- Actions sur le message d'erreur - déplacement");
+        LOGGER.info("Déplacement de la fenêtre sur le libellé nom");
+        seleniumTools.dragAndDrop(wait, pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait),
+                pageRessourcesParticipantsCreer.inputNom(wait, idCommune));
+        Thread.sleep(500);
+        LOGGER.info("Vérification de la flèche");
+        assertion.verifyEquals("z-arrow-u", pageRessourcesParticipantsCreer.orientationFlecheMessageErreur(wait),
+                "L'orientation de la flèche du message d'erreur n'est pas celle attendu");
+
+        LOGGER.info("Pas de test 7 -- Actions sur le message d'erreur - Infobulle");
+        assertion.verifyEquals("Allez sur le mauvais champ", pageRessourcesParticipantsCreer.flecheMessageAlerteDonneeObligatoire(wait).getAttribute("title"),
+                "L'infobulle du message d'erreur n'est pas celle attendu");
+
+        LOGGER.info("Pas de test 8 -- Fermeture du message d'erreur");
+        LOGGER.info("Fermeture de l'alerte");
+        seleniumTools.clickOnElement(wait, pageRessourcesParticipantsCreer.dismissMessageAlerteDonneeObligatoire(wait));
+        LOGGER.info("Press de la key a");
+//        Robot robot = new Robot();
+//        robot.keyPress(KeyEvent.VK_A);
+//        LOGGER.info("Vérification du champ prénom");
+//        Thread.sleep(500);
+//        assertion.verifyEquals("a", pageRessourcesParticipantsCreer.inputPrenom(wait,idCommune).getAttribute("value"));
+
+        LOGGER.info("Pas de test 9 -- Créer un participant - Utilisateur lié existant non renseigné");
+        LOGGER.info("Remplissage du formulaire - Données de base");
+        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                checkboxCodeParticipant, nomParticipant, prenomParticipant, idParticipant, typeParticipant);
+        LOGGER.info("Coche de la case : " + utilisateurLie);
         pageRessourcesParticipantsCreer.remplirUtilisateurLie(wait, idCommune, utilisateurLie);
+        LOGGER.info("Enregistrement");
+        pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        LOGGER.info("Vérification du message d'erreur");
+        assertion.verifyEquals("merci de choisir à utilisateur à lier", pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait).getText(),
+                "Le message d'erreur n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 10 -- Créer un participant - Utilisateur lié nouvel utilisateur non renseigné");
+        LOGGER.info("Remplissage du formulaire - Données de base");
+        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                checkboxCodeParticipant, nomParticipant, prenomParticipant, idParticipant, typeParticipant);
+        LOGGER.info("Coche de la case : " + utilisateurLie);
+        pageRessourcesParticipantsCreer.remplirUtilisateurLie(wait, idCommune, utilisateurLie2);
+        LOGGER.info("Enregistrement");
+        pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        LOGGER.info("Vérification du message d'erreur");
+        assertion.verifyEquals("ne peut pas être vide", pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait).getText(),
+                "Le message d'erreur n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 11 -- Créer un participant - Utilisateur lié nouvel utilisateur : confirmation mot de passe non conforme");
+        LOGGER.info("Remplissage du formulaire - Données de base");
+        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                checkboxCodeParticipant, nomParticipant, prenomParticipant, idParticipant, typeParticipant);
+        LOGGER.info("Coche de la case : " + utilisateurLie);
+        pageRessourcesParticipantsCreer.remplirUtilisateurLie(wait, idCommune, utilisateurLie2);
+        pageRessourcesParticipantsCreer.remplirNouvelUtilisateur(wait, idCommune, nomUtilisateur, mdpUtilisateur, "", emailUtilisateur);
+        LOGGER.info("Enregistrement");
+        pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        LOGGER.info("Vérification du message d'erreur");
+        assertion.verifyEquals("les mots de passe ne correspondent pas", pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait).getText(),
+                "Le message d'erreur n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 12 -- Créer un participant - Utilisateur lié nouvel utilisateur : ID et Nom d'utilisateur non conformes");
+        LOGGER.info("Remplissage du formulaire - Données de base");
+        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                checkboxCodeParticipant, nomParticipant, prenomParticipant, idParticipantPreRequis, typeParticipant);
+        LOGGER.info("Coche de la case : " + utilisateurLie);
+        pageRessourcesParticipantsCreer.remplirUtilisateurLie(wait, idCommune, utilisateurLie2);
+        pageRessourcesParticipantsCreer.remplirNouvelUtilisateur(wait, idCommune, nomUtilisateurPreRequis, mdpUtilisateur, mdpUtilisateur, emailUtilisateur);
+        pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
+        assertion.verifyEquals("ID déjà utilisé. Il doit être unique",
+                pageRessourcesParticipantsCreer.messageWarning(wait).get(0).getText(),
+                "Le premier message warning ne correspond pas à celui attendu");
+        assertion.verifyEquals("ce nom d'utilisateur est déjà utilisé par un autre utilisateur",
+                pageRessourcesParticipantsCreer.messageWarning(wait).get(1).getText(),
+                "Le deuxième message warning ne correspond pas à celui attendu");
+        LOGGER.info("Enregistrement");
+
+        LOGGER.info("Pas de test 13 -- Créer un participant - Utilisateur lié nouvel utilisateur : email non conforme");
+        String codeParticipantRecup = pageRessourcesParticipantsCreer.inputCode(wait,idCommune).getAttribute("value");
+        pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
+                checkboxCodeParticipant, nomParticipant, prenomParticipant, idParticipant, typeParticipant);
         pageRessourcesParticipantsCreer.remplirNouvelUtilisateur(wait, idCommune,
-                nomUtilisateur, mdpUtilisateur, mdpUtilisateur, emailUtilisateur);
+                nomUtilisateur, mdpUtilisateur, mdpUtilisateur, emailUtilisateur.replace("@", ""));
+        LOGGER.info("Enregistrement");
         pageRessourcesParticipants = pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
+        LOGGER.info("Vérification du titre de la page et du message de création");
         LOGGER.info("Verification du titre de la page et du message de création");
         assertion.verifyEquals("Liste des participants", pageRessourcesParticipants.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
@@ -166,74 +277,7 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         assertion.verifyEquals(codeParticipantRecup, mapValeurTableauParticipant.get("Code"),
                 "La valeur du participé créé n'est pas celle attendu");
 
-        LOGGER.info("Pas de test 6 -- Utilisation du filtre Détails personnels");
-
-        pageRessourcesParticipants.appliquerFiltre(wait, idCommune, prenomParticipant);
-        Thread.sleep(500);
-        LOGGER.info("Récupération des valeurs du tableau filtré");
-        mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune).get(nomParticipant);
-        LOGGER.info("Vérification de la recherche");
-        assertion.verifyEquals(prenomParticipant, mapValeurTableauParticipant.get("Prénom"),
-                "La valeur n'est pas présent dans le tableau");
-        LOGGER.info("Reset du filtre");
-        pageRessourcesParticipants.appliquerFiltre(wait, idCommune, "");
-
-        LOGGER.info("Pas de test 7 -- Filtre Plus d'options - conformité des options");
-        seleniumTools.clickOnElement(wait, pageRessourcesParticipants.boutonPlusOptions(wait, idCommune));
-        assertion.verifyEquals("", pageRessourcesParticipants.inputPeriodeDepuis(wait, idCommune).getAttribute("value"),
-                "Le champ date de la période active depuis n'est pas vide");
-        assertion.verifyEquals("", pageRessourcesParticipants.inputPeriodeA(wait, idCommune).getAttribute("value"),
-                "Le champ date de la période active à n'est pas vide");
-        LOGGER.info("Récupération de la liste des type de l'option supplémentaire");
-        List<String> listValueSelectOptionSupplementaire = pageRessourcesParticipants.listSelectTypeOptionSupplementaire(wait, idCommune);
-        assertion.verifyEquals("Tous", listValueSelectOptionSupplementaire.get(0),
-                "La liste du type de l'option supplémentaire n'est pas celle attendu");
-        assertion.verifyEquals("Ressource en file", listValueSelectOptionSupplementaire.get(1),
-                "La liste du type de l'option supplémentaire n'est pas celle attendu");
-        assertion.verifyEquals("Ressource normale", listValueSelectOptionSupplementaire.get(2),
-                "La liste du type de l'option supplémentaire n'est pas celle attendu");
-        assertion.verifyEquals("Tous", pageRessourcesParticipants.libelleSelectTypeOptionSupplementaire(wait, idCommune).getText(),
-                "Le texte par défaut du type d'option supplémentaire n'est pas celui attendu");
 
 
-        LOGGER.info("Pas de test 8 -- Navigation pages de participants (1/4)");
-        LOGGER.info("Vérification du numéro de la page");
-        assertion.verifyEquals("1", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
-                "Le numéro de la page n'est pas celui attendu");
-        LOGGER.info("Navigation à la page suivante");
-        seleniumTools.clickOnElement(wait, pageRessourcesParticipants.paginationSuivante(wait, idCommune));
-        LOGGER.info("Vérification du numéro de la page");
-        Thread.sleep(500);
-        assertion.verifyEquals("2", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
-                "Le numéro de la page n'est pas celui attendu");
-
-        LOGGER.info("Pas de test 9 -- Navigation pages de participants (2/4)");
-        LOGGER.info("Navigation à la page précédente");
-        seleniumTools.clickOnElement(wait, pageRessourcesParticipants.paginationPrecedente(wait, idCommune));
-        LOGGER.info("Vérification du numéro de la page");
-        Thread.sleep(500);
-        assertion.verifyEquals("1", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
-                "Le numéro de la page n'est pas celui attendu");
-
-        LOGGER.info("Pas de test 10 -- Navigation pages de participants (3/4)");
-        seleniumTools.clickOnElement(wait, pageRessourcesParticipants.paginationLast(wait, idCommune));
-        Thread.sleep(500);
-        assertion.verifyEquals("2", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
-                "Le numéro de la page n'est pas celui attendu");
-
-        LOGGER.info("Pas de test 11 -- Navigation pages de participants (4/4)");
-        seleniumTools.clickOnElement(wait, pageRessourcesParticipants.paginationFirst(wait, idCommune));
-        Thread.sleep(500);
-        assertion.verifyEquals("1", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
-                "Le numéro de la page n'est pas celui attendu");
-
-        LOGGER.info("Pas de test 12 -- Connexion à l'application - Utilisateur créé");
-        LOGGER.info("Deconnection");
-        PageLogin pageLogin = pageRessourcesParticipants.seDeconnecter(wait);
-        LOGGER.info("Connection avec le nouvel utilisateur");
-        pageCalendrier = pageLogin.seConnecter(wait, nomUtilisateur, mdpUtilisateur);
-        LOGGER.info("Vérification de la page");
-        idCommune = outilsProjet.retournerIdCommune(wait);
-        pageCalendrier.titreDeLaPageUtilisateur(wait, idCommune);
     }
 }

@@ -84,11 +84,10 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
             List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[not(@title='Supprimer')]"));
             for (int j = 0; j < listCritereValeur.size(); j++) {
                 listValeurCalendrier.put(listValeurEnTeteTableau.get(j), listCritereValeur.get(j).getText());
-                LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + listCritereValeur.get(j).getText());
             }
-            LOGGER.info("Récupération terminé");
             listMapCalendrierTableau.put(listValeurCalendrier.get("Nom"),listValeurCalendrier);
         }
+        LOGGER.info("Récupération terminé");
         return listMapCalendrierTableau;
     }
 

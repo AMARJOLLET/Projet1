@@ -148,7 +148,8 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     // Tableau
     public List<String> recuperationLibelleTableau(String idCommune){
         List<String> listLibelleTableauString = new ArrayList<>();
-        List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tr[@id = '" + idCommune + "r5']/th"));
+        List<WebElement> listLibelleTableau = driver.findElements(
+                By.xpath("//div[@id='" + idCommune + "j4']//tr[@class='z-columns']/th"));
         for (WebElement we : listLibelleTableau) {
             listLibelleTableauString.add(we.getText());
         }
@@ -159,12 +160,13 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     public Map<String, Map<String, String>> recuperationValeurTableauParticipant(String idCommune) {
         // List WebElement
         List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
-        List<WebElement> listTableau = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "nf']/tr"));
+        List<WebElement> listTableau = driver.findElements(
+                By.xpath("//div[@id='" + idCommune + "j4']//tbody[@class=\"z-rows\"]/tr"));
 
         // Map Contenant la map
         Map<String, Map<String, String>> listMapCalendrierTableau = new HashMap<>();
 
-        LOGGER.info("Début de la récupération - " + listTableau.size() + " particiapent detectés ");
+        LOGGER.info("Début de la récupération - " + listTableau.size() + " participant detectés ");
         for (WebElement we : listTableau) {
             Map<String, String> listValeurCalendrier = new HashMap<>();
             List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[not(@title='Supprimer')]"));
