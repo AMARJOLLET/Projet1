@@ -1,0 +1,4 @@
+username,password
+admin,admin
+Nom,Description,Type,Code,CheckboxCode
+MACHINETEST1,MACHINETEST1,Ressource normale,MACHINETEST1,false

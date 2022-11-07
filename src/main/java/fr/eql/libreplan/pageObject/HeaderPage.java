@@ -3,6 +3,7 @@ package fr.eql.libreplan.pageObject;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
+import fr.eql.libreplan.pageObject.pageRessources.machines.PageRessourcesMachines;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
@@ -20,17 +21,8 @@ public class HeaderPage extends AbstractFullPage {
     }
 
 /*######################################################################################################################
-                                                    METHODES
+                                                    WebElement
 ######################################################################################################################*/
-
-    // Deconnexion
-    public PageLogin seDeconnecter(WebDriverWait wait) throws Throwable {
-        WebElement deconnexion = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@class=\"user-area\"]//*[contains(@href,'logout')]")));
-        seleniumTools.clickOnElement(wait, deconnexion);
-        return new PageLogin(driver);
-    }
-
     // Calendrier et ses sous-menus
     public WebElement calendrierButton(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "7-b")));
@@ -56,7 +48,6 @@ public class HeaderPage extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "e-a")));
     }
 
-
     // Resources et ses sous-menus
     public WebElement ressourcesButton(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "r-b")));
@@ -65,6 +56,41 @@ public class HeaderPage extends AbstractFullPage {
     public WebElement ressourcesCritereButton(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "y-a")));
     }
+
+    public WebElement ressourcesCalendrierButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "w-a")));
+    }
+
+    public WebElement ressourcesJoursExceptionnelsButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "x-a")));
+    }
+
+    public WebElement ressourcesParticipantsButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t-a")));
+    }
+
+    public WebElement ressourcesAvancementButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "z-a")));
+    }
+
+    public WebElement ressourcesMachinesButton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "u-a")));
+    }
+
+
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
+
+    // Deconnexion
+    public PageLogin seDeconnecter(WebDriverWait wait) throws Throwable {
+        WebElement deconnexion = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@class=\"user-area\"]//*[contains(@href,'logout')]")));
+        seleniumTools.clickOnElement(wait, deconnexion);
+        return new PageLogin(driver);
+    }
+
+
 
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
@@ -76,9 +102,7 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesCriteres(driver);
     }
 
-    public WebElement ressourcesCalendrierButton(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "w-a")));
-    }
+
 
     public PageRessourcesCalendrier cliquerRessourcesCalendrier(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
@@ -90,9 +114,7 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesCalendrier(driver);
     }
 
-    public WebElement ressourcesJoursExceptionnelsButton(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "x-a")));
-    }
+
 
     public PageRessourcesJoursExceptionnels cliquerRessourcesJoursExceptionnels(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
@@ -102,10 +124,6 @@ public class HeaderPage extends AbstractFullPage {
         LOGGER.info("Click sur le bouton Jours Exceptionnels");
         seleniumTools.clickOnElement(wait, ressourcesJoursExceptionnelsButton(wait,idCommune));
         return new PageRessourcesJoursExceptionnels(driver);
-    }
-
-    public WebElement ressourcesParticipantsButton(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t-a")));
     }
 
     public PageRessourcesParticipants cliquerRessourcesParticipants(WebDriverWait wait, String idCommune) throws Throwable {
@@ -118,10 +136,6 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesParticipants(driver);
     }
 
-    public WebElement ressourcesAvancementButton(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "z-a")));
-    }
-
     public PageRessourcesAvancement cliquerRessourcesAvancement(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
@@ -132,6 +146,15 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesAvancement(driver);
     }
 
+    public PageRessourcesMachines cliquerRessourcesMachines(WebDriverWait wait, String idCommune) throws Throwable {
+        LOGGER.info("Mouseover sur le bouton ressources");
+        seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
+        LOGGER.info("Mouseover sur le bouton Machines");
+        seleniumTools.mouseOver(wait, ressourcesMachinesButton(wait,idCommune));
+        LOGGER.info("Click sur le bouton Machines");
+        seleniumTools.clickOnElement(wait, ressourcesMachinesButton(wait,idCommune));
+        return new PageRessourcesMachines(driver);
+    }
 
 
 }

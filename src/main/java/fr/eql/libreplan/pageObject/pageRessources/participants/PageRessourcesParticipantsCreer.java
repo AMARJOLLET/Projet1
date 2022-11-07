@@ -21,23 +21,11 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
-    // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "_6-cnt"))).getText();
-    }
 
-    public String titreDuFormulaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "b6-cnt"))).getText();
-    }
-
-
-    // Message Création
-    public String messageCreation(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//div[@class='message_INFO']/span"))).getText();
-    }
-
-    // WebElement
+/*######################################################################################################################
+                                                  WEBELEMENTS
+######################################################################################################################*/
+    // Bouton
     public WebElement boutonAnnuler(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"bf-box")));
     }
@@ -50,24 +38,15 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune+"af-box")));
     }
 
-    // Methode
-    public PageRessourcesParticipants cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
-        return new PageRessourcesParticipants(driver);
-    }
-
-    public void cliquerEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
-    }
-
-    // WebElement Formulaire
-        // LIBELLE
+    // Formulaire
+    //////// LIBELLE
     public WebElement libelleCode(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i6")));
     }
 
     public WebElement libelleCheckboxCode(WebDriverWait wait, String idCommune) {
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@id='"+ idCommune + "l6-chdex']//label")));
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//td[@id='"+ idCommune + "l6-chdex']//label")));
     }
 
     public WebElement libellePrenom(WebDriverWait wait, String idCommune){
@@ -87,10 +66,12 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
     }
 
     public WebElement libelleSelectType(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//select[@id='"+ idCommune + "17']/option[@selected='selected']")));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//select[@id='"+ idCommune + "17']/option[@selected='selected']")));
     }
 
-    // Input
+    // Formulaire
+    ////// Input
     public WebElement inputCode(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune + "k6")));
     }
@@ -115,7 +96,79 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "17")));
     }
 
+    // Onglet Calendrier
+    public WebElement boutonOngletCalendrier(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "66-hm")));
+    }
 
+    public WebElement inputTypeCalendrier(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "kb")));
+    }
+
+    public WebElement objetCalendrier(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "vb")));
+    }
+
+    public WebElement tableauProprieteDesJours(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "yb-cave")));
+    }
+
+    public WebElement boutonSupprimerCalendrier(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ce-box")));
+    }
+
+    public WebElement sousOngletExceptions(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "dc-hm")));
+    }
+
+    public WebElement sousOngletSemaineDeTravail(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ec-hm")));
+    }
+
+    public WebElement sousOngletPeriodeActivation(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "fc-hm")));
+    }
+
+    public WebElement libelleChoisirCalendrierParent(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "_b")));
+    }
+
+    public WebElement inputCalendrierParent(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "0b-real")));
+    }
+
+
+
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
+    // Titre
+    public String titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "_6-cnt"))).getText();
+    }
+
+    public String titreDuFormulaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "b6-cnt"))).getText();
+    }
+
+
+    // Message Création
+    public String messageCreation(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//div[@class='message_INFO']/span"))).getText();
+    }
+
+    // Cliquer Bouton
+    public PageRessourcesParticipants cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
+        return new PageRessourcesParticipants(driver);
+    }
+
+    public void cliquerEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
+    }
+
+    // UTILISATEUR LIE
     public Map<String, WebElement> mapUtilisateurLie(WebDriverWait wait, String idCommune){
         List<WebElement> listOptionUtilisateurLie = driver.findElements(By.xpath("//span[@id='" + idCommune +"77']/span"));
         Map<String, WebElement> mapOptionUtilisateurLie = new HashMap<>();
@@ -184,53 +237,7 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Email"), email);
     }
 
-
-
     // Onglet Calendrier
-
-    // WebElement
-    public WebElement boutonOngletCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "66-hm")));
-    }
-
-    public WebElement inputTypeCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "kb")));
-    }
-
-    public WebElement objetCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "vb")));
-    }
-
-    public WebElement tableauProprieteDesJours(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "yb-cave")));
-    }
-
-    public WebElement boutonSupprimerCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ce-box")));
-    }
-
-    public WebElement sousOngletExceptions(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "dc-hm")));
-    }
-
-    public WebElement sousOngletSemaineDeTravail(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ec-hm")));
-    }
-
-    public WebElement sousOngletPeriodeActivation(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "fc-hm")));
-    }
-
-    public WebElement libelleChoisirCalendrierParent(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "_b")));
-    }
-
-    public WebElement inputCalendrierParent(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "0b-real")));
-    }
-
-
-    // Methode
     public void cliquerOngletCalendrier(WebDriverWait wait, String idCommune) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonOngletCalendrier(wait, idCommune));
     }
@@ -261,7 +268,5 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         }
         return listCalendrierParent;
     }
-
-
 
 }

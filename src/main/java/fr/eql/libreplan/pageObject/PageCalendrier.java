@@ -3,6 +3,7 @@ package fr.eql.libreplan.pageObject;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
+import fr.eql.libreplan.pageObject.pageRessources.machines.PageRessourcesMachines;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
@@ -18,6 +19,10 @@ public class PageCalendrier extends AbstractFullPage{
         PageFactory.initElements(driver, this);
     }
 
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
+
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f8"))).getText();
     }
@@ -25,6 +30,8 @@ public class PageCalendrier extends AbstractFullPage{
     public String titreDeLaPageUtilisateur(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f0-cap"))).getText();
     }
+
+    // Accès Ressources
 
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {
         return getHeader().cliquerRessourcesCriteres(wait, idCommune);
@@ -46,5 +53,8 @@ public class PageCalendrier extends AbstractFullPage{
         return getHeader().cliquerRessourcesAvancement(wait, idCommune);
     }
 
+    public PageRessourcesMachines cliquerRessourcesMachine(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerRessourcesMachines(wait, idCommune);
+    }
 
 }

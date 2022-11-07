@@ -23,6 +23,85 @@ public class PageRessourcesParticipants extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
+/*######################################################################################################################
+                                                  WEBELEMENTS
+######################################################################################################################*/
+    // WebElement Bouton
+    public WebElement boutonCreer(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "y5-box']//td[text() = 'Créer']")));
+    }
+
+    public WebElement boutonModifierParticipant(WebDriverWait wait, String nomParticipant){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomParticipant + "']/ancestor::tr//span[@title='Modifier']")));
+    }
+
+
+    // FILTRER
+    public String libelleFiltrerPar(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n4"))).getText();
+    }
+
+    public WebElement boutonDetailPersonnels(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "d5")));
+    }
+
+    public String libelleDetailPersonnels(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "c5"))).getText();
+    }
+
+    public WebElement boutonPlusOptions(WebDriverWait wait, String idCommune){
+        //return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@id = '" + idCommune + "n5-chdex]//tbody")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "f5-cnt")));
+    }
+
+    public WebElement boutonFiltre(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n5-box")));
+    }
+
+    // OPTION SUPPLEMENTAIRE
+    public WebElement inputPeriodeDepuis(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i5-real")));
+    }
+
+    public WebElement inputPeriodeA(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "k5-real")));
+    }
+
+    public WebElement selectTypeOptionSupplementaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "m5")));
+    }
+
+
+    public WebElement libelleSelectTypeOptionSupplementaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.visibilityOf(selectTypeOptionSupplementaire(wait, idCommune).findElement
+                (By.xpath("./option[@selected='selected']"))));
+    }
+
+    // PAGINATION
+    public WebElement paginationSuivante(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-next")));
+    }
+
+    public WebElement paginationPrecedente(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-prev")));
+    }
+
+    public WebElement paginationLast(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-last")));
+    }
+
+    public WebElement paginationFirst(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-first")));
+    }
+
+    public WebElement inputPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-real")));
+    }
+
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
+
     // Se deconnecter
     public PageLogin seDeconnecter(WebDriverWait wait) throws Throwable {
         return getHeader().seDeconnecter(wait);
@@ -43,16 +122,6 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     public String messageCreation(WebDriverWait wait ){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
                 ("//div[@class='message_INFO']/span"))).getText();
-    }
-
-
-    // WebElement Bouton
-    public WebElement boutonCreer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "y5-box']//td[text() = 'Créer']")));
-    }
-
-    public WebElement boutonModifierParticipant(WebDriverWait wait, String nomParticipant){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomParticipant + "']/ancestor::tr//span[@title='Modifier']")));
     }
 
     // Clique Bouton
@@ -108,42 +177,7 @@ public class PageRessourcesParticipants extends AbstractFullPage {
         return listMapCalendrierTableau;
     }
 
-
-    // FILTRER
-    public WebElement boutonFiltrerPar(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q4-real")));
-    }
-
-    public String libelleFiltrerPar(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n4"))).getText();
-    }
-
-    public WebElement boutonDetailPersonnels(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "d5")));
-    }
-
-    public String libelleDetailPersonnels(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "c5"))).getText();
-    }
-
-    public WebElement boutonPlusOptions(WebDriverWait wait, String idCommune){
-        //return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[@id = '" + idCommune + "n5-chdex]//tbody")));
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "f5-cnt")));
-    }
-
-    // OPTION SUPPLEMENTAIRE
-    public WebElement inputPeriodeDepuis(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i5-real")));
-    }
-
-    public WebElement inputPeriodeA(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "k5-real")));
-    }
-
-    public WebElement selectTypeOptionSupplementaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "m5")));
-    }
-
+    // Filtre Option Supplémentaire
     public List<String> listSelectTypeOptionSupplementaire(WebDriverWait wait, String idCommune){
         List<String> valueSelectTypeOptionSupplementaire = new ArrayList<>();
         List<WebElement> listSelectTypeOptionSupplementaire = selectTypeOptionSupplementaire(wait, idCommune).findElements(By.xpath("./option"));
@@ -153,44 +187,10 @@ public class PageRessourcesParticipants extends AbstractFullPage {
         return valueSelectTypeOptionSupplementaire;
     }
 
-    public WebElement libelleSelectTypeOptionSupplementaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.visibilityOf(selectTypeOptionSupplementaire(wait, idCommune).findElement(By.xpath("./option[@selected='selected']"))));
-    }
-
-    public WebElement boutonFiltre(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n5-box")));
-    }
-
-    public WebElement paginationSuivante(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-next")));
-    }
-
-    public WebElement paginationPrecedente(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-prev")));
-    }
-
-    public WebElement paginationLast(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-last")));
-    }
-
-    public WebElement paginationFirst(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-first")));
-    }
-
-
-    public WebElement inputPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "q5-real")));
-    }
-
-
-    // Methode
     public void appliquerFiltre(WebDriverWait wait, String idCommune, String recherche) throws Throwable {
         seleniumTools.sendKey(wait, boutonDetailPersonnels(wait, idCommune), recherche);
         seleniumTools.clickOnElement(wait, boutonFiltre(wait, idCommune));
     }
-
-
-
 
 
     // Nettoyage
