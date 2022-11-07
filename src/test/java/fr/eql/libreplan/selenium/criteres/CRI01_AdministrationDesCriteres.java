@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.criteres;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteresCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
@@ -57,11 +57,11 @@ public class CRI01_AdministrationDesCriteres extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des critères");
-        PageRessourcesCriteres pageRessourcesCriteres = pageCalendrier.cliquerRessourcesCriteres(wait, idCommune);
+        PageRessourcesCriteres pageRessourcesCriteres = pageCalendrierPlanification.cliquerRessourcesCriteres(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page d'administration des critères");
         assertion.verifyEquals("Types de critères Liste", pageRessourcesCriteres.titreDeLaPage(wait, idCommune),

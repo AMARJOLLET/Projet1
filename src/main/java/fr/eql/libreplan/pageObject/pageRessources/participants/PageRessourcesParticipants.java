@@ -146,7 +146,9 @@ public class PageRessourcesParticipants extends AbstractFullPage {
 
 
     // Tableau
-    public List<String> recuperationLibelleTableau(String idCommune){
+    public List<String> recuperationLibelleTableau(WebDriverWait wait, String idCommune){
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "(//div[@id='" + idCommune + "j4']//tr[@class='z-columns']/th)[1]")));
         List<String> listLibelleTableauString = new ArrayList<>();
         List<WebElement> listLibelleTableau = driver.findElements(
                 By.xpath("//div[@id='" + idCommune + "j4']//tr[@class='z-columns']/th"));
@@ -157,9 +159,9 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     }
 
     // Tableau
-    public Map<String, Map<String, String>> recuperationValeurTableauParticipant(String idCommune) {
+    public Map<String, Map<String, String>> recuperationValeurTableauParticipant(WebDriverWait wait, String idCommune) {
         // List WebElement
-        List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
+        List<String> listValeurEnTeteTableau = recuperationLibelleTableau(wait, idCommune);
         List<WebElement> listTableau = driver.findElements(
                 By.xpath("//div[@id='" + idCommune + "j4']//tbody[@class=\"z-rows\"]/tr"));
 
@@ -215,7 +217,7 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
                                              String nom) throws Throwable {
         LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(idCommune);
+        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(wait, idCommune);
         LOGGER.info("Vérification de l'absence du JDD dans le tableau");
         if(listValeurTableauParticipant.containsKey(nom)){
             LOGGER.info("Présence du JDD " + nom);
@@ -227,7 +229,7 @@ public class PageRessourcesParticipants extends AbstractFullPage {
     public void verificationNettoyageTableauAvecUtilisateur(WebDriverWait wait, String idCommune,
                                              String nom) throws Throwable {
         LOGGER.info("Récupération valeurs du tableau en vu de suppression");
-        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(idCommune);
+        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(wait, idCommune);
         LOGGER.info("Vérification de l'absence du JDD dans le tableau");
         if(listValeurTableauParticipant.containsKey(nom)){
             LOGGER.info("Présence du JDD " + nom);

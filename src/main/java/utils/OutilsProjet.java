@@ -103,5 +103,14 @@ public class OutilsProjet extends Logging {
         return code;
     }
 
+
+
+//    public Map<String, Map<String, String>> recuperationValeurTableau(WebDriverWait wait){
+//        List<WebElement> libelleTableau = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+//                "//div[@class=\"z-grid-header\"]//tr[@class=\"z-columns\"]/th")));
+//        List<WebElement> listRowTableau = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+//                "//tbody[@class=\"z-rows\"]/tr")));
+//    }
+
 }
 

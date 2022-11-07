@@ -1,6 +1,6 @@
 package utils;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.PageLogin;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrierCreer;
@@ -17,16 +17,16 @@ public class MethodesProjet extends InstanciationDriver {
         super(driver);
     }
 
-    public PageCalendrier seConnecter(WebDriverWait wait, String username, String password) throws Throwable {
+    public PageCalendrierPlanification seConnecter(WebDriverWait wait, String username, String password) throws Throwable {
         LOGGER.info("Pas de test 1 -- Connexion à l'application - Profil Admin");
 
         PageLogin pageLogin = new PageLogin(driver);
-        PageCalendrier pageCalendrier = pageLogin.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = pageLogin.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Planification des projets", pageCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Planification des projets", pageCalendrierPlanification.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
-        return new PageCalendrier(driver);
+        return new PageCalendrierPlanification(driver);
     }
 
 

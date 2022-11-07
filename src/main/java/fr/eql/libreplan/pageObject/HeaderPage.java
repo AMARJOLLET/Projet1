@@ -90,8 +90,6 @@ public class HeaderPage extends AbstractFullPage {
         return new PageLogin(driver);
     }
 
-
-
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
@@ -102,8 +100,6 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesCriteres(driver);
     }
 
-
-
     public PageRessourcesCalendrier cliquerRessourcesCalendrier(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));
@@ -113,8 +109,6 @@ public class HeaderPage extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, ressourcesCalendrierButton(wait,idCommune));
         return new PageRessourcesCalendrier(driver);
     }
-
-
 
     public PageRessourcesJoursExceptionnels cliquerRessourcesJoursExceptionnels(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
@@ -156,5 +150,6 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesMachines(driver);
     }
 
+    
 
 }

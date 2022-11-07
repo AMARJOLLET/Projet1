@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.gestionDesCalendriers;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
@@ -38,12 +38,12 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         // Pré-requis du test
         LOGGER.info("Nettoyage si necessaire");
-        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrier.cliquerRessourcesParticipants(wait, idCommune);
+        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrierPlanification.cliquerRessourcesParticipants(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Nettoyage Participant");
         pageRessourcesParticipants.verificationNettoyageTableau(wait, idCommune, nomParticipant);
@@ -71,7 +71,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         assertion.verifyEquals("Liste des participants", pageRessourcesParticipants.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des titres du tableau");
-        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(idCommune);
+        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(wait, idCommune);
         LOGGER.info("Vérification des libellés du tableau");
         assertion.verifyEquals("Surnom", listLibelleTableau.get(0),
                 "Le libelle n'est pas celui attendu");
@@ -115,7 +115,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         assertion.verifyEquals("Liste des participants", pageRessourcesParticipants.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des valeurs du tableau");
-        Map<String, Map<String, String>> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune);
+        Map<String, Map<String, String>> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune);
         LOGGER.info("Vérification des valeurs du tableau");
         assertion.verifyTrue(mapValeurTableauParticipant.containsKey(nomParticipant),
                 "Le tableau ne possède pas le participant " + nomParticipant);

@@ -1,14 +1,12 @@
 package fr.eql.libreplan.selenium.gestionDesRessources;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -56,17 +54,17 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page de gestion des participants");
-        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrier.cliquerRessourcesParticipants(wait, idCommune);
+        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrierPlanification.cliquerRessourcesParticipants(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Liste des participants", pageRessourcesParticipants.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des titres du tableau");
-        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(idCommune);
+        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(wait, idCommune);
         LOGGER.info("Vérification des libellés du tableau");
         assertion.verifyEquals("Surnom", listLibelleTableau.get(0),
                 "Le libelle n'est pas celui attendu");
@@ -97,7 +95,7 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
         pageRessourcesParticipants.verificationNettoyageTableauAvecUtilisateur(wait, idCommune, nomParticipant);
         LOGGER.info("Vérification que le JDD pré-requis présent");
         Thread.sleep(500);
-        Map<String, Map<String, String>> mapValeurTableau = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune);
+        Map<String, Map<String, String>> mapValeurTableau = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune);
         if (!mapValeurTableau.containsKey(nomParticipantPreRequis)){
             PageRessourcesParticipantsCreer pageRessourcesParticipantsCreer = pageRessourcesParticipants.cliquerBoutonCreer(wait, idCommune);
             pageRessourcesParticipantsCreer.remplirFormulaire(wait, idCommune,
@@ -266,7 +264,7 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
         assertion.verifyEquals("Participant enregistré", pageRessourcesParticipants.messageCreation(wait),
                 "Le message de création n'est pas celui attendu");
         LOGGER.info("Récupération des valeurs du tableau");
-        Map<String, String> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune).get(nomParticipant);
+        Map<String, String> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune).get(nomParticipant);
         LOGGER.info("Vérification du participant créé");
         assertion.verifyEquals(nomParticipant, mapValeurTableauParticipant.get("Surnom"),
                 "La valeur du participé créé n'est pas celle attendu");

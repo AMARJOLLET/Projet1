@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.gestionDesCalendriers;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrierCreer;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
@@ -47,11 +47,11 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des jours exceptionnels des calendriers");
-        PageRessourcesJoursExceptionnels pageRessourcesJoursExceptionnels = pageCalendrier.cliquerRessourcesJoursExceptionnels(wait, idCommune);
+        PageRessourcesJoursExceptionnels pageRessourcesJoursExceptionnels = pageCalendrierPlanification.cliquerRessourcesJoursExceptionnels(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune),

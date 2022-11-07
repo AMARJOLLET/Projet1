@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.gestionDesRessources;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.machines.PageRessourcesMachines;
 import fr.eql.libreplan.pageObject.pageRessources.machines.PageRessourcesMachinesCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
@@ -37,11 +37,11 @@ public class GRE02_CreerUneMachine extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page de gestion des participants");
-        PageRessourcesMachines pageRessourcesMachines = pageCalendrier.cliquerRessourcesMachine(wait, idCommune);
+        PageRessourcesMachines pageRessourcesMachines = pageCalendrierPlanification.cliquerRessourcesMachine(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Machines Liste", pageRessourcesMachines.titreDeLaPage(wait, idCommune),

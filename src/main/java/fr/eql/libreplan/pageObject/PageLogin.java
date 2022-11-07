@@ -29,14 +29,14 @@ public class PageLogin extends AbstractFullPage{
 													METHODES
 ######################################################################################################################*/
 
-    public PageCalendrier seConnecter(WebDriverWait wait, String username, String password) throws Throwable {
+    public PageCalendrierPlanification seConnecter(WebDriverWait wait, String username, String password) throws Throwable {
         LOGGER.info("Renseigne le username + " + username);
         seleniumTools.sendKey(wait, usernameField, username);
         LOGGER.info("Renseigne le username + " + password);
         seleniumTools.sendKey(wait, passwordField, password);
         LOGGER.info("Connection en tant " + username);
         seleniumTools.clickOnElement(wait, seConnecter);
-        return new PageCalendrier(driver);
+        return new PageCalendrierPlanification(driver);
     }
 
 }

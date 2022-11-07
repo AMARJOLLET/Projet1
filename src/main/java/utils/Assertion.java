@@ -57,8 +57,4 @@ public class Assertion extends Snapshot {
             snapshot(className, e);
         }
     }
-
-
-
-
 }

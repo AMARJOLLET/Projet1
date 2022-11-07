@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.gestionDesRessources;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.PageLogin;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
@@ -42,17 +42,17 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page de gestion des participants");
-        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrier.cliquerRessourcesParticipants(wait, idCommune);
+        PageRessourcesParticipants pageRessourcesParticipants = pageCalendrierPlanification.cliquerRessourcesParticipants(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Liste des participants", pageRessourcesParticipants.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des titres du tableau");
-        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(idCommune);
+        List<String> listLibelleTableau = pageRessourcesParticipants.recuperationLibelleTableau(wait, idCommune);
         LOGGER.info("Vérification des libellés du tableau");
         assertion.verifyEquals("Surnom", listLibelleTableau.get(0),
                 "Le libelle n'est pas celui attendu");
@@ -155,7 +155,7 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         assertion.verifyEquals("Participant enregistré", pageRessourcesParticipants.messageCreation(wait),
                 "Le message de création n'est pas celui attendu");
         LOGGER.info("Récupération des valeurs du tableau");
-        Map<String, String> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune).get(nomParticipant);
+        Map<String, String> mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune).get(nomParticipant);
         LOGGER.info("Vérification du participant créé");
         assertion.verifyEquals(nomParticipant, mapValeurTableauParticipant.get("Surnom"),
                 "La valeur du participé créé n'est pas celle attendu");
@@ -171,7 +171,7 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         pageRessourcesParticipants.appliquerFiltre(wait, idCommune, prenomParticipant);
         Thread.sleep(500);
         LOGGER.info("Récupération des valeurs du tableau filtré");
-        mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(idCommune).get(nomParticipant);
+        mapValeurTableauParticipant = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune).get(nomParticipant);
         LOGGER.info("Vérification de la recherche");
         assertion.verifyEquals(prenomParticipant, mapValeurTableauParticipant.get("Prénom"),
                 "La valeur n'est pas présent dans le tableau");
@@ -231,9 +231,9 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         LOGGER.info("Deconnection");
         PageLogin pageLogin = pageRessourcesParticipants.seDeconnecter(wait);
         LOGGER.info("Connection avec le nouvel utilisateur");
-        pageCalendrier = pageLogin.seConnecter(wait, nomUtilisateur, mdpUtilisateur);
+        pageCalendrierPlanification = pageLogin.seConnecter(wait, nomUtilisateur, mdpUtilisateur);
         LOGGER.info("Vérification de la page");
         idCommune = outilsProjet.retournerIdCommune(wait);
-        pageCalendrier.titreDeLaPageUtilisateur(wait, idCommune);
+        pageCalendrierPlanification.titreDeLaPageUtilisateur(wait, idCommune);
     }
 }

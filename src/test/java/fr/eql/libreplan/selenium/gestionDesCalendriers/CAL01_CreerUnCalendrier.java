@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.gestionDesCalendriers;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrierCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
@@ -41,11 +41,11 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         LOGGER.info("Pas de test 2 -- Accéder à la page d'administration des calendriers");
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
-        PageRessourcesCalendrier pageRessourcesCalendrier = pageCalendrier.cliquerRessourcesCalendrier(wait, idCommune);
+        PageRessourcesCalendrier pageRessourcesCalendrier = pageCalendrierPlanification.cliquerRessourcesCalendrier(wait, idCommune);
         methodesProjet.VerificationPageAdministrationCalendriers(wait);
 
         LOGGER.info("Pas de test 3 -- Créer un calendrier - Accès au formulaire de création");

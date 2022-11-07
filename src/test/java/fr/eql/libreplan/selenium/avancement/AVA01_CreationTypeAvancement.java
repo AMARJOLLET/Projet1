@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.avancement;
 
-import fr.eql.libreplan.pageObject.PageCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancementCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
@@ -44,11 +44,11 @@ public class AVA01_CreationTypeAvancement extends AbstractTestSelenium {
         LOGGER.info("Accès à la page : " + url);
         driver.get(url);
 
-        PageCalendrier pageCalendrier = methodesProjet.seConnecter(wait, username, password);
+        PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
 
         LOGGER.info("Pas de test 2 -- Accéder à la page de gestion des types d'avancement");
-        PageRessourcesAvancement pageRessourcesAvancement = pageCalendrier.cliquerRessourcesAvancement(wait, idCommune);
+        PageRessourcesAvancement pageRessourcesAvancement = pageCalendrierPlanification.cliquerRessourcesAvancement(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
         assertion.verifyEquals("Types d'avancement Liste", pageRessourcesAvancement.titreDeLaPage(wait, idCommune),
