@@ -1,6 +1,6 @@
 package fr.eql.libreplan.selenium.projetEtTaches;
 
-import fr.eql.libreplan.pageObject.PageCalendrier.PageDetailCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrier.projet.PageDetailProjet;
 import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
@@ -48,7 +48,7 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         String idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification de l'absence du JDD");
         PageListeDesProjets pageListeDesProjets = pageCalendrierPlanification.cliquerOngletListeDesProjets(wait, idCommune);
-        pageListeDesProjets.nettoyageJDD(wait, idCommune, nomProjet);
+        pageListeDesProjets.nettoyageJDD(wait, nomProjet);
         pageCalendrierPlanification = pageListeDesProjets.cliquerOngletPlanificationDesProjets(wait, idCommune);
         LOGGER.info("Vérification terminé");
 
@@ -103,18 +103,19 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         calendarDateEcheance.add(Calendar.DAY_OF_MONTH, Integer.parseInt(nombreJourDateEcheance));
         String dateDebutProjet = sdf.format(calendarDateDebut.getTime());
         String dateEcheance = sdf.format(calendarDateEcheance.getTime());
+        LOGGER.info("Generation date de debut: " + dateDebutProjet + " et date échéance " + dateEcheance);
         LOGGER.info("Remplissage du Formulaire du projet");
         pageCalendrierPlanification.remplirFormulaireCreationProjet(wait, idCommune,
                 nomProjet, modeleProjet, checkboxCodeProjet, codeProjet, dateDebutProjet, dateEcheance, clientProjet, calendrierProjet);
         LOGGER.info("Formulaire rempli");
-        PageDetailCalendrier pageDetailCalendrier = pageCalendrierPlanification.cliquerAccepterBouton(wait);
+        PageDetailProjet pageDetailProjet = pageCalendrierPlanification.cliquerAccepterBouton(wait);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Formulaire enregistrer");
 
         LOGGER.info("Pas de test 4 -- Vérifier les onglets - menu vertical");
         LOGGER.info("Recuperation de la liste des onglets");
-        List<String> listOngletDetailProjet = pageDetailCalendrier.recuperationListeOngletDetailProjet(wait);
-        List<String> listOngletProjet = pageDetailCalendrier.recuperationListeOngletProjet(wait, idCommune);
+        List<String> listOngletDetailProjet = pageDetailProjet.recuperationListeOngletDetailProjet(wait);
+        List<String> listOngletProjet = pageDetailProjet.recuperationListeOngletProjet(wait, idCommune);
         LOGGER.info("Vérification des onglets");
         assertion.verifyEquals("Planification de projet", listOngletProjet.get(0),
                 "L'onglet planification DE projet n'est pas celui attendu");
@@ -149,31 +150,31 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
                 "L'onglet Autorisation n'est pas celui attendu");
 
         LOGGER.info("Pas de test 6 -- Bouton d'enregistrement et d'annulation de l'édition du projet ");
-        assertion.verifyEquals("Enregistrer le projet", pageDetailCalendrier.boutonEnregistrerProjet(wait).getAttribute("title"),
+        assertion.verifyEquals("Enregistrer le projet", pageDetailProjet.boutonEnregistrerProjet(wait).getAttribute("title"),
                 "Le bouton enregistrer le projet n'est pas celui attendu");
-        assertion.verifyTrue(pageDetailCalendrier.imageBoutonEnregistrerProjet(wait).getAttribute("src").contains("ico_save.png"),
+        assertion.verifyTrue(pageDetailProjet.imageBoutonEnregistrerProjet(wait).getAttribute("src").contains("ico_save.png"),
                 "L'image du bouton Annuler n'est pas celui ");
-        assertion.verifyEquals("Annuler l'édition", pageDetailCalendrier.boutonAnnulerEdition(wait).getAttribute("title"),
+        assertion.verifyEquals("Annuler l'édition", pageDetailProjet.boutonAnnulerEdition(wait).getAttribute("title"),
                 "Le bouton Annuler l'édition n'est pas celui attendu");
-        assertion.verifyTrue(pageDetailCalendrier.imageBoutonboutonAnnulerEdition(wait).getAttribute("src").contains("ico_back.png"),
+        assertion.verifyTrue(pageDetailProjet.imageBoutonboutonAnnulerEdition(wait).getAttribute("src").contains("ico_back.png"),
                 "L'image du bouton Annuler n'est pas celui attendu");
 
         LOGGER.info("Pas de test 7 -- Utilisation du bouton d'annulation de l'édition du projet (1/4)");
-        pageDetailCalendrier.cliquerBoutonAnnulerEdition(wait);
+        pageDetailProjet.cliquerBoutonAnnulerEdition(wait);
         LOGGER.info("Vérification de la popup Annulation");
         assertion.verifyEquals("Les modifications non enregistrées seront perdues. Êtes-vous sûr ?",
-                pageDetailCalendrier.textPopupAnnulationEdition(wait).getText(),
+                pageDetailProjet.textPopupAnnulationEdition(wait).getText(),
                 "Le texte de la popup annulation de l'édition n'est pas celui attendu");
-        assertion.verifyEquals("OK", pageDetailCalendrier.boutonOKPopupAnnulationEdition(wait).getText(),
+        assertion.verifyEquals("OK", pageDetailProjet.boutonOKPopupAnnulationEdition(wait).getText(),
                 "Le bouton OK de la popup d'annulation de l'édition n'est pas celui attendu");
-        assertion.verifyEquals("Annuler", pageDetailCalendrier.boutonAnnulerPopupAnnulationEdition(wait).getText(),
+        assertion.verifyEquals("Annuler", pageDetailProjet.boutonAnnulerPopupAnnulationEdition(wait).getText(),
                 "Le bouton Annuler de la popup d'annulation de l'édition n'est pas celui attendu");
 
         LOGGER.info("Pas de test 8 -- Utilisation du bouton d'annulation de l'édition du projet (2/4)");
-        pageDetailCalendrier.cliquerBoutonAnnulerPopup(wait);
+        pageDetailProjet.cliquerBoutonAnnulerPopup(wait);
         LOGGER.info("Recuperation de la liste des onglets");
-        listOngletProjet = pageDetailCalendrier.recuperationListeOngletProjet(wait, idCommune);
-        listOngletDetailProjet = pageDetailCalendrier.recuperationListeOngletDetailProjet(wait);
+        listOngletProjet = pageDetailProjet.recuperationListeOngletProjet(wait, idCommune);
+        listOngletDetailProjet = pageDetailProjet.recuperationListeOngletDetailProjet(wait);
         LOGGER.info("Vérification des onglet");
         assertion.verifyEquals("WBS (tâches)", listOngletDetailProjet.get(0),
                 "L'onglet WBS (tâches) n'est pas celui attendu");
@@ -181,18 +182,18 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
                 "L'onglet Détail du projet des projets n'est pas celui attendu");
 
         LOGGER.info("Pas de test 9 -- Utilisation du bouton d'annulation de l'édition du projet (3/4)");
-        pageDetailCalendrier.cliquerBoutonAnnulerEdition(wait);
+        pageDetailProjet.cliquerBoutonAnnulerEdition(wait);
         LOGGER.info("Vérification de la popup Annulation");
         assertion.verifyEquals("Les modifications non enregistrées seront perdues. Êtes-vous sûr ?",
-                pageDetailCalendrier.textPopupAnnulationEdition(wait).getText(),
+                pageDetailProjet.textPopupAnnulationEdition(wait).getText(),
                 "Le texte de la popup annulation de l'édition n'est pas celui attendu");
-        assertion.verifyEquals("OK", pageDetailCalendrier.boutonOKPopupAnnulationEdition(wait).getText(),
+        assertion.verifyEquals("OK", pageDetailProjet.boutonOKPopupAnnulationEdition(wait).getText(),
                 "Le bouton OK de la popup d'annulation de l'édition n'est pas celui attendu");
-        assertion.verifyEquals("Annuler", pageDetailCalendrier.boutonAnnulerPopupAnnulationEdition(wait).getText(),
+        assertion.verifyEquals("Annuler", pageDetailProjet.boutonAnnulerPopupAnnulationEdition(wait).getText(),
                 "Le bouton Annuler de la popup d'annulation de l'édition n'est pas celui attendu");
 
         LOGGER.info("Pas de test 10 -- Utilisation du bouton d'annulation de l'édition du projet (4/4)");
-        pageCalendrierPlanification = pageDetailCalendrier.cliquerBoutonOkPopup(wait);
+        pageCalendrierPlanification = pageDetailProjet.cliquerBoutonOkPopup(wait);
         Thread.sleep(500);
         idCommune = outilsProjet.retournerIdCommune(wait);
         listOngletProjet = pageCalendrierPlanification.recuperationListeOngletProjet(wait, idCommune);
@@ -206,7 +207,7 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         pageListeDesProjets = pageCalendrierPlanification.cliquerCalendrierProjet(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        Map<String, String> mapValeurTableauProjet = pageListeDesProjets.recuperationValeurTableau(wait, idCommune).get(nomProjet);
+        Map<String, WebElement> mapValeurTableauProjet = pageListeDesProjets.recuperationValeurTableau(wait).get(nomProjet);
         listOngletProjet = pageListeDesProjets.recuperationListeOngletProjet(wait, idCommune);
         assertion.verifyEquals("Liste des projets", pageListeDesProjets.titreDeLaPage(wait, idCommune),
                 "Le titre de la page n'est pas celui attendu");
@@ -221,21 +222,21 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
 
         LOGGER.info("Pas de test 12 -- Vérifier les informations affichées pour le projet");
         LOGGER.info("Vérification des données du tableau");
-        assertion.verifyEquals(nomProjet, mapValeurTableauProjet.get("Nom"),
+        assertion.verifyEquals(nomProjet, mapValeurTableauProjet.get("Nom").getText(),
                 "Le nom n'est pas celui attendu");
-        assertion.verifyEquals(codeProjet, mapValeurTableauProjet.get("Code"),
+        assertion.verifyEquals(codeProjet, mapValeurTableauProjet.get("Code").getText(),
                 "Le code n'est pas celui attendu");
-        assertion.verifyEquals(dateDebutProjet, mapValeurTableauProjet.get("Date de début"),
+        assertion.verifyEquals(dateDebutProjet, mapValeurTableauProjet.get("Date de début").getText(),
                 "La date de début n'est pas celle attendu");
-        assertion.verifyEquals(dateEcheance, mapValeurTableauProjet.get("Echéance"),
+        assertion.verifyEquals(dateEcheance, mapValeurTableauProjet.get("Echéance").getText(),
                 "La date d'échéance n'est pas celle attendu");
-        assertion.verifyEquals("", mapValeurTableauProjet.get("Client"),
+        assertion.verifyEquals("", mapValeurTableauProjet.get("Client").getText(),
                 "Le client n'est pas celui attendu");
-        assertion.verifyEquals("0 €", mapValeurTableauProjet.get("Budget total"),
+        assertion.verifyEquals("0 €", mapValeurTableauProjet.get("Budget total").getText(),
                 "Le budjet total n'est pas celui attendu");
-        assertion.verifyEquals("0", mapValeurTableauProjet.get("Heures"),
+        assertion.verifyEquals("0", mapValeurTableauProjet.get("Heures").getText(),
                 "Le nombre d'heure n'est pas celui attendu");
-        assertion.verifyEquals("PRE-VENTES", mapValeurTableauProjet.get("Etat"),
+        assertion.verifyEquals("PRE-VENTES", mapValeurTableauProjet.get("Etat").getText(),
                 "L'état n'est pas celui attendu");
 
         LOGGER.info("Vérification des boutons associés au projet");

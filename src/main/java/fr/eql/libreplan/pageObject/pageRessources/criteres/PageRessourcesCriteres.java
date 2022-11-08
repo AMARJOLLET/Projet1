@@ -40,19 +40,23 @@ public class PageRessourcesCriteres extends AbstractFullPage {
 
     // WebElement bouton
     public WebElement boutonSupprimer(WebDriverWait wait, String nom){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));
     }
 
     public WebElement boutonSupprimerOK(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
     }
 
     public WebElement boutonSupprimerAnnuler(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Annuler\")]")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Annuler\")]")));
     }
 
     public WebElement boutonCreer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "_5-box']//td[text() = 'Créer']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//table[@id = '" + idCommune + "_5-box']//td[text() = 'Créer']")));
     }
 
     // Bouton
@@ -130,7 +134,8 @@ public class PageRessourcesCriteres extends AbstractFullPage {
         WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath
                 ("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']")));
         seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
+        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
         seleniumTools.clickOnElement(wait, acceptSuppression);
     }
 

@@ -1,0 +1,12 @@
+username,password
+admin,admin
+Nom,Modèle,Code,checkboxCode,Date de début,Echeance,Client,Calendrier
+PROJET_TEST1,,PRJTEST001,false,5,15,,Default
+Nouvelle tâche,Heures,Code,Date de début
+Tache1-P1,5,T1,05
+Nouvelle tâche,Heures,Code,Date de début
+Tache2-P1,10,T2,08
+Nouvelle tâche,Heures,Code,Echeance
+Tache3-P1,20,T3,03
+Nouvelle tâche,Heures,Code,Echeance
+Tache4-P1,8,T4,05

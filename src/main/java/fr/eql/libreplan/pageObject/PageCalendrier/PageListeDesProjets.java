@@ -1,11 +1,11 @@
 package fr.eql.libreplan.pageObject.PageCalendrier;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
+import fr.eql.libreplan.pageObject.PageCalendrier.projet.PageDetailProjet;
 import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v85.page.Page;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -50,13 +50,18 @@ public class PageListeDesProjets extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
     }
 
-
 /*######################################################################################################################
                                                     METHODES
 ######################################################################################################################*/
     // TITRE
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune + "h6"))).getText();
+    }
+
+    // Fil Ariane
+    public String recuperationFilAriance(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                "//tr[@class=\"ruta\"]"))).getText();
     }
 
 
@@ -73,8 +78,15 @@ public class PageListeDesProjets extends AbstractFullPage {
 
 
     // Tableau
-    public Map<String, Map<String, String>> recuperationValeurTableau(WebDriverWait wait, String idCommune){
-        Map<String, Map<String, String>> mapRecuperationValeurTableau = new HashMap<>();
+    public PageDetailProjet cliquerNomProjet(WebDriverWait wait, String nomProjet) throws Throwable {
+        Map<String, WebElement> mapValeurTableau =  recuperationValeurTableau(wait).get(nomProjet);
+        seleniumTools.clickOnElement(wait, mapValeurTableau.get("Nom"));
+        return new PageDetailProjet(driver);
+    }
+
+
+    public Map<String, Map<String, WebElement>> recuperationValeurTableau(WebDriverWait wait){
+        Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = new HashMap<>();
         List<WebElement> listLibelle = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
                 "//div[@class=\"z-window-embedded\"]//tr[@class='z-columns']/th")));
         List<WebElement> listRow = driver.findElements(By.xpath(
@@ -82,14 +94,13 @@ public class PageListeDesProjets extends AbstractFullPage {
 
         LOGGER.info("Recupération de " + listRow.size() + " rows");
         for(WebElement row : listRow){
-            Map<String, String> mapValeurRow = new HashMap<>();
+            Map<String, WebElement> mapValeurRow = new HashMap<>();
             List<WebElement> listValeurRow = row.findElements(By.xpath(
                     "./td"));
             for(int i = 0; i < listLibelle.size(); i++){
 
-                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i).getText());
+                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i));
             }
-            LOGGER.info(listLibelle.get(0).getText());
             mapRecuperationValeurTableau.put(listValeurRow.get(0).getText(), mapValeurRow);
         }
 
@@ -99,8 +110,8 @@ public class PageListeDesProjets extends AbstractFullPage {
 
 
     // Nettoyage
-    public void nettoyageJDD(WebDriverWait wait, String idCommune, String nom) throws Throwable {
-        Map<String, Map<String, String>> mapRecuperationValeurTableau = recuperationValeurTableau(wait, idCommune);
+    public void nettoyageJDD(WebDriverWait wait, String nom) throws Throwable {
+        Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = recuperationValeurTableau(wait);
         LOGGER.info("Vérification de la présence de " + nom);
         if(mapRecuperationValeurTableau.containsKey(nom)){
             LOGGER.info(nom + " detecté ...");

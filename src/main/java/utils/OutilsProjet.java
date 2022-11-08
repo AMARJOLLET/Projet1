@@ -86,7 +86,7 @@ public class OutilsProjet extends Logging {
 
 
     public String retournerIdCommune(WebDriverWait wait){
-        WebElement elementWithID = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[1]")));
+        WebElement elementWithID = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div)[1]")));
         String idCommune = elementWithID.getAttribute("id").substring(0,4);
         LOGGER.info("Récupération de l'id commune : " + idCommune);
         return idCommune;
@@ -104,13 +104,61 @@ public class OutilsProjet extends Logging {
     }
 
 
+    public String extraireValueWBS(WebElement weValeurWBS){
+        try {
+            WebElement we = weValeurWBS.findElement(By.xpath(".//input"));
+            return we.getAttribute("value");
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-//    public Map<String, Map<String, String>> recuperationValeurTableau(WebDriverWait wait){
-//        List<WebElement> libelleTableau = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
-//                "//div[@class=\"z-grid-header\"]//tr[@class=\"z-columns\"]/th")));
-//        List<WebElement> listRowTableau = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
-//                "//tbody[@class=\"z-rows\"]/tr")));
-//    }
+    public Map<String, Map<String, WebElement>> recuperationValeurTableauInput(List<WebElement> listLibelle, List<WebElement> listRow){
+        Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = new HashMap<>();
 
+        LOGGER.info("Recupération de " + listRow.size() + " rows");
+        for(WebElement row : listRow){
+            Map<String, WebElement> mapValeurRow = new HashMap<>();
+            List<WebElement> listValeurRow = row.findElements(By.xpath("./td"));
+            for(int i = 0; i < listLibelle.size(); i++){
+                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i));
+            }
+            LOGGER.info(extraireValueWBS(mapValeurRow.get("Nom")));
+            mapRecuperationValeurTableau.put(extraireValueWBS(mapValeurRow.get("Nom")), mapValeurRow);
+        }
+
+        return mapRecuperationValeurTableau;
+    }
+
+    public List<Map<String, WebElement>> ordreValeurTableau(List<WebElement> listLibelle, List<WebElement> listRow){
+        List<Map<String, WebElement>> listRecuperationValeurTableau = new ArrayList<>();
+
+        LOGGER.info("Recupération de " + listRow.size() + " rows");
+        for(WebElement row : listRow){
+            Map<String, WebElement> mapValeurRow = new HashMap<>();
+            List<WebElement> listValeurRow = row.findElements(By.xpath("./td"));
+            for(int i = 0; i < listLibelle.size(); i++){
+                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i));
+            }
+            LOGGER.info(extraireValueWBS(mapValeurRow.get("Nom")));
+            listRecuperationValeurTableau.add(mapValeurRow);
+        }
+
+        return listRecuperationValeurTableau;
+    }
+
+
+
+    // BOUTON DES TABLEAUX
+    public WebElement boutonTableauText(WebDriverWait wait, String nomRow, String titleBouton){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nomRow + "']/ancestor::tr//span[@title='"+titleBouton+"']")));
+    }
+
+    // BOUTON DES TABLEAUX
+    public WebElement boutonTableauValue(WebDriverWait wait, String nomRow, String titleBouton){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//input[@value = '" + nomRow + "']/ancestor::tr//span[@title='"+titleBouton+"']")));
+    }
 }
 

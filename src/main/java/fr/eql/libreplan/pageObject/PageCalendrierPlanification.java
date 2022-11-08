@@ -1,6 +1,6 @@
 package fr.eql.libreplan.pageObject;
 
-import fr.eql.libreplan.pageObject.PageCalendrier.PageDetailCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrier.projet.PageDetailProjet;
 import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
@@ -81,7 +81,8 @@ public class PageCalendrierPlanification extends AbstractFullPage{
 ######################################################################################################################*/
     // TITRE
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f8"))).getText();
+        return wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
+                "(//tr[@class=\"ruta\"]//span)[last()]"))).getText();
     }
 
     public String titreDeLaPageUtilisateur(WebDriverWait wait, String idCommune){
@@ -109,9 +110,9 @@ public class PageCalendrierPlanification extends AbstractFullPage{
         seleniumTools.clickOnElement(wait, creerUnProjet(wait, idCommune));
     }
 
-    public PageDetailCalendrier cliquerAccepterBouton(WebDriverWait wait) throws Throwable {
+    public PageDetailProjet cliquerAccepterBouton(WebDriverWait wait) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonAccepter(wait));
-        return new PageDetailCalendrier(driver);
+        return new PageDetailProjet(driver);
     }
 
 

@@ -37,28 +37,34 @@ public class PageRessourcesCalendrier extends AbstractFullPage {
 
     // WebElement Bouton
     public WebElement boutonCreer(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "q4-box']//td[text() = 'Créer']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//table[@id = '" + idCommune + "q4-box']//td[text() = 'Créer']")));
     }
 
     public WebElement boutonCreerUneDerive(WebDriverWait wait, String nomCalendrier){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomCalendrier + "']/ancestor::tr[1]//span[@title='Créer une dérive']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nomCalendrier + "']/ancestor::tr//span[@title='Créer une dérive']")));
     }
 
     public WebElement boutonReplierDerive(WebDriverWait wait, String nomCalendrier){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomCalendrier + "']/preceding-sibling::span")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nomCalendrier + "']/preceding-sibling::span")));
     }
 
     public String verificationDeriveReplier(WebDriverWait wait, String nomCalendrier){
-        WebElement we = driver.findElement(By.xpath("//span[text() = '" + nomCalendrier + "']/ancestor::tr/following-sibling::tr[1]"));
+        WebElement we = driver.findElement(By.xpath(
+                "//span[text() = '" + nomCalendrier + "']/ancestor::tr/following-sibling::tr[1]"));
         return we.getCssValue("display");
     }
 
     public WebElement boutonCopierCalendrier(WebDriverWait wait, String nomCalendrier){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomCalendrier + "']/ancestor::tr[1]//span[@title='Créer une copie']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nomCalendrier + "']/ancestor::tr//span[@title='Créer une copie']")));
     }
 
     public WebElement boutonModifierCalendrier(WebDriverWait wait, String nomCalendrier){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text() = '" + nomCalendrier + "']/ancestor::tr[1]//span[@title='Modifier']")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nomCalendrier + "']/ancestor::tr//span[@title='Modifier']")));
     }
 
     // Clique Bouton
@@ -131,7 +137,8 @@ public class PageRessourcesCalendrier extends AbstractFullPage {
 
     // Nettoyage
     public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']"));
+        WebElement boutonSupprimer = driver.findElement(By.xpath(
+                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']"));
         seleniumTools.clickOnElement(wait, boutonSupprimer);
         WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
         seleniumTools.clickOnElement(wait, acceptSuppression);
