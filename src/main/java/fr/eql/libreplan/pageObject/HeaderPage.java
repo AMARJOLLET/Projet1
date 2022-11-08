@@ -1,5 +1,6 @@
 package fr.eql.libreplan.pageObject;
 
+import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
@@ -29,7 +30,7 @@ public class HeaderPage extends AbstractFullPage {
     }
 
     public WebElement calendrierProjetsButton(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "9-a")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "a-a")));
     }
 
     public WebElement calendrierChargementDesRessourcesButton(WebDriverWait wait, String idCommune){
@@ -90,6 +91,19 @@ public class HeaderPage extends AbstractFullPage {
         return new PageLogin(driver);
     }
 
+    // METHODE CALENDRIER
+    public PageListeDesProjets cliquerCalendrierProjet(WebDriverWait wait, String idCommune) throws Throwable{
+        LOGGER.info("Mouseover sur le bouton Calendrier");
+        seleniumTools.mouseOver(wait, calendrierButton(wait,idCommune));
+        LOGGER.info("Mouseover sur le bouton Projet");
+        seleniumTools.mouseOver(wait, calendrierProjetsButton(wait,idCommune));
+        LOGGER.info("Click sur le bouton Projet");
+        seleniumTools.clickOnElement(wait, calendrierProjetsButton(wait,idCommune));
+        return new PageListeDesProjets(driver);
+    }
+
+
+    // Methode RESSOURCES
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, ressourcesButton(wait,idCommune));

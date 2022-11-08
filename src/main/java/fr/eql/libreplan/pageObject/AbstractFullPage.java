@@ -1,6 +1,7 @@
 package fr.eql.libreplan.pageObject;
 
 
+import fr.eql.libreplan.pageObject.PageCalendrier.HeaderCalendrier;
 import org.openqa.selenium.WebDriver;
 import utils.InstanciationDriver;
 import utils.OutilsProjet;
@@ -18,6 +19,10 @@ public abstract class AbstractFullPage extends InstanciationDriver {
 
     public HeaderPage getHeader() {
         return new HeaderPage(driver);
+    }
+
+    public HeaderCalendrier getHeaderCalendrier() {
+        return new HeaderCalendrier(driver);
     }
 }
 

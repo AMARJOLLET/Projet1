@@ -1,6 +1,7 @@
 package fr.eql.libreplan.pageObject.PageCalendrier;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
+import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PageDetailCalendrier extends AbstractFullPage {
 
@@ -21,12 +23,7 @@ public class PageDetailCalendrier extends AbstractFullPage {
 /*######################################################################################################################
                                                   WEBELEMENT
 ######################################################################################################################*/
-    public List<WebElement> listOngletProjet(WebDriverWait wait, String idCommune){
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("(//tr[@id='"+idCommune+"r3-chdex']//span[not(@style='display:none;')])[1]")));
-        return driver.findElements(By.xpath(
-                "//tr[@id='"+idCommune+"r3-chdex']//span[not(@class=\"perspective hidden z-button\")]   "));
-    }
+
 
     public List<WebElement> listOngletDetailProjet(WebDriverWait wait){
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
@@ -60,7 +57,7 @@ public class PageDetailCalendrier extends AbstractFullPage {
 
     public WebElement boutonOKPopupAnnulationEdition(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "(//span[@class=\"z-messagebox-btn z-button\"])[1]")));
+                "(//span[@class='z-messagebox-btn z-button'])[1]")));
 
     }
 
@@ -71,6 +68,7 @@ public class PageDetailCalendrier extends AbstractFullPage {
 /*######################################################################################################################
                                                     METHODES
 ######################################################################################################################*/
+    // POPUP ANNULATION
     public void cliquerBoutonAnnulerEdition(WebDriverWait wait) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonAnnulerEdition(wait));
     }
@@ -79,18 +77,18 @@ public class PageDetailCalendrier extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, boutonAnnulerPopupAnnulationEdition(wait));
     }
 
-    public void cliquerBoutonOkPopup(WebDriverWait wait) throws Throwable {
+    public PageCalendrierPlanification cliquerBoutonOkPopup(WebDriverWait wait) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonOKPopupAnnulationEdition(wait));
+        return new PageCalendrierPlanification(driver);
     }
 
 
+    // ONGLET PROJET
     public List<String> recuperationListeOngletProjet(WebDriverWait wait, String idCommune){
-        List<String> listOngletProjetString = new ArrayList<>();
-        for(WebElement onglet : listOngletProjet(wait, idCommune)){
-            listOngletProjetString.add(onglet.getText());
-        }
-        return listOngletProjetString;
+        return getHeaderCalendrier().recuperationListeOngletProjet(wait, idCommune);
     }
+
+
 
     public List<String> recuperationListeOngletDetailProjet(WebDriverWait wait){
         List<String> listOngletDetailProjetString = new ArrayList<>();

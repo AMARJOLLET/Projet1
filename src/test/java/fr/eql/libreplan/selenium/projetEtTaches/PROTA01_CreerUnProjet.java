@@ -1,6 +1,7 @@
 package fr.eql.libreplan.selenium.projetEtTaches;
 
 import fr.eql.libreplan.pageObject.PageCalendrier.PageDetailCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,10 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         PageCalendrierPlanification pageCalendrierPlanification = methodesProjet.seConnecter(wait, username, password);
         String idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification de l'absence du JDD");
-
+        PageListeDesProjets pageListeDesProjets = pageCalendrierPlanification.cliquerOngletListeDesProjets(wait, idCommune);
+        pageListeDesProjets.nettoyageJDD(wait, idCommune, nomProjet);
+        pageCalendrierPlanification = pageListeDesProjets.cliquerOngletPlanificationDesProjets(wait, idCommune);
+        LOGGER.info("Vérification terminé");
 
         LOGGER.info("Pas de test 2 -- Accéder au formulaire de création d'un projet");
         pageCalendrierPlanification.cliquerCreerUnProjet(wait, idCommune);
@@ -113,7 +117,7 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         List<String> listOngletProjet = pageDetailCalendrier.recuperationListeOngletProjet(wait, idCommune);
         LOGGER.info("Vérification des onglets");
         assertion.verifyEquals("Planification de projet", listOngletProjet.get(0),
-                "L'onglet planification des projets n'est pas celui attendu");
+                "L'onglet planification DE projet n'est pas celui attendu");
         assertion.verifyEquals("Détail du projet", listOngletProjet.get(1),
                 "L'onglet Détail du projet des projets n'est pas celui attendu");
         assertion.verifyEquals("Chargement des ressources", listOngletProjet.get(2),
@@ -188,7 +192,62 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
                 "Le bouton Annuler de la popup d'annulation de l'édition n'est pas celui attendu");
 
         LOGGER.info("Pas de test 10 -- Utilisation du bouton d'annulation de l'édition du projet (4/4)");
-        //pageDetailCalendrier.cliquerBoutonOkPopup(wait, idCommune);
+        pageCalendrierPlanification = pageDetailCalendrier.cliquerBoutonOkPopup(wait);
+        Thread.sleep(500);
+        idCommune = outilsProjet.retournerIdCommune(wait);
+        listOngletProjet = pageCalendrierPlanification.recuperationListeOngletProjet(wait, idCommune);
+        LOGGER.info("Vérification des onglets");
+        assertion.verifyEquals("Planification des projets", listOngletProjet.get(0),
+                "L'onglet planification des projets n'est pas celui attendu");
+        assertion.verifyTrue(pageCalendrierPlanification.displayOngletWBS(wait),
+                "L'onglet WBS est toujours affiché");
 
+        LOGGER.info("Pas de test 11 -- Vérifier la création du projet");
+        pageListeDesProjets = pageCalendrierPlanification.cliquerCalendrierProjet(wait, idCommune);
+        idCommune = outilsProjet.retournerIdCommune(wait);
+        LOGGER.info("Vérification du titre de la page");
+        Map<String, String> mapValeurTableauProjet = pageListeDesProjets.recuperationValeurTableau(wait, idCommune).get(nomProjet);
+        listOngletProjet = pageListeDesProjets.recuperationListeOngletProjet(wait, idCommune);
+        assertion.verifyEquals("Liste des projets", pageListeDesProjets.titreDeLaPage(wait, idCommune),
+                "Le titre de la page n'est pas celui attendu");
+        assertion.verifyEquals("Planification des projets", listOngletProjet.get(0),
+                "L'onglet planification DES projet n'est pas celui attendu");
+        assertion.verifyEquals("Liste des projets", listOngletProjet.get(1),
+                "L'onglet Liste des projets des projets n'est pas celui attendu");
+        assertion.verifyEquals("Chargement des ressources", listOngletProjet.get(2),
+                "L'onglet Chargement des ressources n'est pas celui attendu");
+        assertion.verifyEquals("Calendrier des ressources en file", listOngletProjet.get(3),
+                "L'onglet Calendrier des ressources en file n'est pas celui attendu");
+
+        LOGGER.info("Pas de test 12 -- Vérifier les informations affichées pour le projet");
+        LOGGER.info("Vérification des données du tableau");
+        assertion.verifyEquals(nomProjet, mapValeurTableauProjet.get("Nom"),
+                "Le nom n'est pas celui attendu");
+        assertion.verifyEquals(codeProjet, mapValeurTableauProjet.get("Code"),
+                "Le code n'est pas celui attendu");
+        assertion.verifyEquals(dateDebutProjet, mapValeurTableauProjet.get("Date de début"),
+                "La date de début n'est pas celle attendu");
+        assertion.verifyEquals(dateEcheance, mapValeurTableauProjet.get("Echéance"),
+                "La date d'échéance n'est pas celle attendu");
+        assertion.verifyEquals("", mapValeurTableauProjet.get("Client"),
+                "Le client n'est pas celui attendu");
+        assertion.verifyEquals("0 €", mapValeurTableauProjet.get("Budget total"),
+                "Le budjet total n'est pas celui attendu");
+        assertion.verifyEquals("0", mapValeurTableauProjet.get("Heures"),
+                "Le nombre d'heure n'est pas celui attendu");
+        assertion.verifyEquals("PRE-VENTES", mapValeurTableauProjet.get("Etat"),
+                "L'état n'est pas celui attendu");
+
+        LOGGER.info("Vérification des boutons associés au projet");
+        assertion.verifyTrue(pageListeDesProjets.boutonModifier(wait, nomProjet).isDisplayed(),
+                "Le bouton modifier n'est pas présent pour : " + nomProjet);
+        assertion.verifyTrue(pageListeDesProjets.boutonSupprimer(wait, nomProjet).isDisplayed(),
+                "Le bouton supprimer n'est pas présent pour : " + nomProjet);
+        assertion.verifyTrue(pageListeDesProjets.boutonpPrevision(wait, nomProjet).isDisplayed(),
+                "Le bouton prévision n'est pas présent pour : " + nomProjet);
+        assertion.verifyTrue(pageListeDesProjets.boutonModele(wait, nomProjet).isDisplayed(),
+                "Le bouton créer un modèle n'est pas présent pour : " + nomProjet);
+
+        LOGGER.info("FIN DU TEST");
     }
 }

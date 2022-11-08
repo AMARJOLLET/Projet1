@@ -1,6 +1,7 @@
 package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.PageCalendrier.PageDetailCalendrier;
+import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
@@ -25,8 +26,14 @@ public class PageCalendrierPlanification extends AbstractFullPage{
 
 
 /*######################################################################################################################
-                                               Accès Ressources
+                                               Accès Menu
 ######################################################################################################################*/
+    // CALENDRIER
+    public PageListeDesProjets cliquerCalendrierProjet(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerCalendrierProjet(wait, idCommune);
+    }
+
+    // RESSOURCES
     public PageRessourcesCriteres cliquerRessourcesCriteres(WebDriverWait wait, String idCommune) throws Throwable {
         return getHeader().cliquerRessourcesCriteres(wait, idCommune);
     }
@@ -72,6 +79,7 @@ public class PageCalendrierPlanification extends AbstractFullPage{
 /*######################################################################################################################
                                                     METHODES
 ######################################################################################################################*/
+    // TITRE
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f8"))).getText();
     }
@@ -80,6 +88,23 @@ public class PageCalendrierPlanification extends AbstractFullPage{
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "f0-cap"))).getText();
     }
 
+    // ONGLET
+    // Recuperation des onglets
+    public List<String> recuperationListeOngletProjet(WebDriverWait wait, String idCommune){
+        return getHeaderCalendrier().recuperationListeOngletProjet(wait, idCommune);
+    }
+
+    public PageListeDesProjets cliquerOngletListeDesProjets(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, getHeaderCalendrier().mapOngletProjet(wait, idCommune).get("Liste des projets"));
+        return new PageListeDesProjets(driver);
+    }
+
+    // ONGLET DETAIL PROJET
+    public boolean displayOngletWBS(WebDriverWait wait){
+        return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='WBS (tâches)']")));
+    }
+
+    // CREATION PROJET
     public void cliquerCreerUnProjet(WebDriverWait wait, String idCommune) throws Throwable {
         seleniumTools.clickOnElement(wait, creerUnProjet(wait, idCommune));
     }
@@ -92,21 +117,21 @@ public class PageCalendrierPlanification extends AbstractFullPage{
 
     // Recuperation Creation Projet
     public Map<String, WebElement> recuperationTableau(WebDriverWait wait, String idCommune){
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("(//tbody[@id='"+idCommune+"m7']//span[@class='z-label'])[1]")));
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("(//tbody[@class='z-rows']//span[@class='z-label'])[1]")));
         // Recuperation de tous les libelles et input
         Map<String, WebElement> mapValeurTableau = new HashMap<>();
         List<WebElement> listLibelle= driver.findElements(By.xpath(
-                "//tbody[@id='"+idCommune+"m7']//span[@class='z-label']"));
+                "//tbody[@class='z-rows']//span[@class='z-label']"));
         List<WebElement> listinput= driver.findElements(By.xpath(
-                "//tbody[@id='"+idCommune+"m7']//input[not(@type=\"checkbox\") and not(@class=\"z-timebox-inp\")]"));
+                "//tbody[@class='z-rows']//input[not(@type='checkbox') and not(@class='z-timebox-inp')]"));
         LOGGER.info(listLibelle.size() + " rows ont été détectées");
         for(int i = 0; i < listLibelle.size(); i++){
             mapValeurTableau.put(listLibelle.get(i).getText(), listinput.get(i));
         }
 
         // Ajout du générer le code
-        WebElement labelCode = driver.findElement(By.xpath("//span[@id='"+idCommune+"48']/label"));
-        WebElement inputCode = driver.findElement(By.xpath("//span[@id='"+idCommune+"48']/input"));
+        WebElement labelCode = driver.findElement(By.xpath("//div[@class='z-grid-body']//span[@class='z-checkbox']/label"));
+        WebElement inputCode = driver.findElement(By.xpath("//div[@class='z-grid-body']//span[@class='z-checkbox']/input"));
         mapValeurTableau.put(labelCode.getText(), inputCode);
 
         return mapValeurTableau;
