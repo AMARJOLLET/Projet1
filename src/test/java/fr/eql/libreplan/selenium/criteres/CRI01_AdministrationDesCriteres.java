@@ -188,6 +188,7 @@ public class CRI01_AdministrationDesCriteres extends AbstractTestSelenium {
         pageRessourcesCriteres = pageRessourcesCriteresCreer.cliquerBoutonAnnuler(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Récupération des valeurs du tableau");
+        Thread.sleep(500);
         listValeurParCritere = pageRessourcesCriteres.recuperationValeurTableauCriteres(idCommune);
         LOGGER.info("Vérification de l'absence de la modification dans le nom");
         assertion.verifyTrue(!listValeurParCritere.containsKey(nomModifier),

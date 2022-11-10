@@ -3,6 +3,7 @@ package fr.eql.libreplan.pageObject.PageCalendrier;
 import fr.eql.libreplan.pageObject.AbstractFullPage;
 import fr.eql.libreplan.pageObject.PageCalendrier.projet.PageDetailProjet;
 import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
+import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -53,9 +54,13 @@ public class PageListeDesProjets extends AbstractFullPage {
 /*######################################################################################################################
                                                     METHODES
 ######################################################################################################################*/
+    public PageRessourcesParticipants cliquerRessourcesParticipants(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerRessourcesParticipants(wait, idCommune);
+    }
+
     // TITRE
     public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune + "h6"))).getText();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//tr[@class=\"ruta\"]//span)[2]"))).getText();
     }
 
     // Fil Ariane

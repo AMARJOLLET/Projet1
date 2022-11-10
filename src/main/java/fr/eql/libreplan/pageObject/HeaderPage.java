@@ -1,6 +1,8 @@
 package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
+import fr.eql.libreplan.pageObject.PageConfiguration.PageConfigurationProfils;
+import fr.eql.libreplan.pageObject.PageCout.PageCoutFeuilleDeTemps;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
@@ -76,6 +78,26 @@ public class HeaderPage extends AbstractFullPage {
 
     public WebElement ressourcesMachinesButton(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "u-a")));
+    }
+
+
+    // Cout et ses sous-menus
+    public WebElement coutBouton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "p0-b")));
+    }
+
+    public WebElement coutFeuilleDeTempsBouton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "r0-a")));
+    }
+
+
+    // Configurqtion
+    public WebElement configurationBouton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "81-b")));
+    }
+
+    public WebElement configurationProfilBouton(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "c1-a")));
     }
 
 
@@ -164,6 +186,31 @@ public class HeaderPage extends AbstractFullPage {
         return new PageRessourcesMachines(driver);
     }
 
-    
+
+    // Methode Cout
+    public PageCoutFeuilleDeTemps cliquerCoutFeuilleDeTemps(WebDriverWait wait,  String idCommune) throws Throwable {
+        LOGGER.info("Mouseover sur le bouton ressources");
+        seleniumTools.mouseOver(wait, coutBouton(wait,idCommune));
+        LOGGER.info("Mouseover sur le bouton Machines");
+        seleniumTools.mouseOver(wait, coutFeuilleDeTempsBouton(wait,idCommune));
+        LOGGER.info("Click sur le bouton Machines");
+        seleniumTools.clickOnElement(wait, coutFeuilleDeTempsBouton(wait,idCommune));
+        return new PageCoutFeuilleDeTemps(driver);
+    }
+
+
+
+    // Methode Configuration
+    public PageConfigurationProfils cliquerConfigurationProfil(WebDriverWait wait, String idCommune) throws Throwable {
+        LOGGER.info("Mouseover sur le bouton configuration");
+        seleniumTools.mouseOver(wait, configurationBouton(wait,idCommune));
+        LOGGER.info("Mouseover sur le bouton Profil");
+        seleniumTools.mouseOver(wait, configurationProfilBouton(wait,idCommune));
+        LOGGER.info("Click sur le bouton Profil");
+        seleniumTools.clickOnElement(wait, configurationProfilBouton(wait,idCommune));
+        return new PageConfigurationProfils(driver);
+    }
+
+
 
 }

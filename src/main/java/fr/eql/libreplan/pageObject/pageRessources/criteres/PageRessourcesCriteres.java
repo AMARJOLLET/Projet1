@@ -144,24 +144,29 @@ public class PageRessourcesCriteres extends AbstractFullPage {
         LOGGER.info("Récupération valeurs du tableau");
         Map<String, Map<String, String>> listValeurParCritere = recuperationValeurTableauCriteres(idCommune);
         LOGGER.info("Vérification de l'absence du JDD dans le tableau");
+        LOGGER.info(listValeurParCritere.size() + " rows detectées");
         if(listValeurParCritere.containsKey(nomAnnuler)){
             LOGGER.info("Présence du JDD " + nomAnnuler);
             supressionJdd(wait, nomAnnuler);
             LOGGER.info("Suppression effectué");
-        } else if (listValeurParCritere.containsKey(nomEnregistrer)){
+        }
+        if (listValeurParCritere.containsKey(nomEnregistrer)){
+            Thread.sleep(500);
             LOGGER.info("Présence du JDD " + nomEnregistrer);
             supressionJdd(wait, nomEnregistrer);
             LOGGER.info("Suppression effectué");
-        } else if (listValeurParCritere.containsKey(nomContinuer)){
+        }
+        if (listValeurParCritere.containsKey(nomContinuer)){
+            Thread.sleep(500);
             LOGGER.info("Présence du JDD " + nomContinuer);
             supressionJdd(wait, nomContinuer);
             LOGGER.info("Suppression effectué");
-        } else if (listValeurParCritere.containsKey(nomModifier)){
+        }
+        if (listValeurParCritere.containsKey(nomModifier)){
+            Thread.sleep(500);
             LOGGER.info("Présence du JDD " + nomModifier);
             supressionJdd(wait, nomModifier);
             LOGGER.info("Suppression effectué");
-        } else {
-            LOGGER.info("Absence d'ancien JDD");
         }
     }
 

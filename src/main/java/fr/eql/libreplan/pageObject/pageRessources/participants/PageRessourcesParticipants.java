@@ -240,8 +240,9 @@ public class PageRessourcesParticipants extends AbstractFullPage {
 
     // PRE REQUIS DU TEST GRE01
     public void ajoutParticipant(WebDriverWait wait, String idCommune) throws Throwable {
-        Thread.sleep(500);
-        List<WebElement> listTableau = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "nf']/tr"));
+        wait.until(ExpectedConditions.elementToBeClickable(boutonCreer(wait, idCommune)));
+        List<WebElement> listTableau = driver.findElements(By.xpath("//div[@class=\"clickable-rows z-grid\"]//tbody[@class=\"z-rows\"]/tr"));
+        LOGGER.info(listTableau.size() + " rows détecté");
         int index = 15 - listTableau.size();
         for (int i = 0; i < index; i++){
             String nom = "ZZ" + RandomStringUtils.randomAlphabetic(5);
@@ -253,5 +254,12 @@ public class PageRessourcesParticipants extends AbstractFullPage {
             pageRessourcesParticipantsCreer.remplirFormulaireMinimun(wait, idCommune, nom, prenom, id);
             pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
         }
+    }
+
+
+    public String nombrePageDisponible(WebDriverWait wait){
+        String page = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
+                "//div[@class=\"z-paging\" and not(contains(@style,'display:none'))]//span[@class=\"z-paging-text\" and ./text()]"))).getText();
+        return page.replace("/","").replace(" ","");
     }
 }

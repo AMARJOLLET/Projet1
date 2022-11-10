@@ -26,6 +26,14 @@ public class Assertion extends Snapshot {
         }
     }
 
+    public void verifyEquals(int expected, int actual, String message) throws Throwable {
+        try{
+            assertEquals(expected, actual, message);
+        } catch (Throwable e){
+            snapshot(className, e);
+        }
+    }
+
     public void verifyEquals(double expected, double actual, double delta, String message) throws Throwable {
         try{
             assertEquals(expected, actual, delta, message);

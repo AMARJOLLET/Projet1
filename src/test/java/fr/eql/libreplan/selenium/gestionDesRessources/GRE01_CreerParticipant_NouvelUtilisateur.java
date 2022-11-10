@@ -218,7 +218,7 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
         LOGGER.info("Pas de test 10 -- Navigation pages de participants (3/4)");
         seleniumTools.clickOnElement(wait, pageRessourcesParticipants.paginationLast(wait, idCommune));
         Thread.sleep(500);
-        assertion.verifyEquals("2", pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
+        assertion.verifyEquals(pageRessourcesParticipants.nombrePageDisponible(wait), pageRessourcesParticipants.inputPage(wait, idCommune).getAttribute("value"),
                 "Le numéro de la page n'est pas celui attendu");
 
         LOGGER.info("Pas de test 11 -- Navigation pages de participants (4/4)");

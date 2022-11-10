@@ -27,7 +27,7 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
 ######################################################################################################################*/
     // Message Erreur
     public WebElement messageAlerteDonneeObligatoire(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(
+        return wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@class='z-errbox z-popup' and not(contains(@style,'display: none'))]//div[@class='z-errbox-center']")));
     }
 
@@ -127,20 +127,28 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "66-hm")));
     }
 
-    public WebElement inputTypeCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "kb")));
+    public WebElement inputTypeCalendrier(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//tr[@class=\"calendar-data z-row\" and not(@style='display:none;')]//table[@class=\"z-hbox\"]")));
     }
 
-    public WebElement objetCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "vb")));
+    //tr[@class="calendar-data z-row" and not(@style='display:none;')]//span
+
+    public WebElement objetCalendrier(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath( "//td/div[@class=\"z-calendar\"]")));
     }
 
     public WebElement tableauProprieteDesJours(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "yb-cave")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-auxheader-cnt\"]")));
     }
 
     public WebElement boutonSupprimerCalendrier(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ce-box")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='Supprimer le calendrier']")));
+    }
+
+    public List<WebElement> listSousOnglet(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "//div[@class=\"z-tabpanels\"]//div[@class=\"z-tabs-header\"]//span")));
     }
 
     public WebElement sousOngletExceptions(WebDriverWait wait, String idCommune){
@@ -151,16 +159,17 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "ec-hm")));
     }
 
+
     public WebElement sousOngletPeriodeActivation(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "fc-hm")));
     }
 
     public WebElement libelleChoisirCalendrierParent(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "_b")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Choisir')]")));
     }
 
     public WebElement inputCalendrierParent(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "0b-real")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Choisir')]/ancestor::tr[1]//input")));
     }
 
 
@@ -182,6 +191,14 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
     public String messageCreation(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
                 ("//div[@class='message_INFO']/span"))).getText();
+    }
+
+    public void changementOrientationFleche(WebDriverWait wait, String idCommune) throws Throwable {
+        String orientation = orientationFlecheMessageErreur(wait);
+        seleniumTools.dragAndDrop(wait, messageAlerteDonneeObligatoire(wait),
+                inputNom(wait, idCommune));
+        wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(messageAlerteDonneeObligatoire(wait), "class", orientation)));
+
     }
 
     // Récupération de l'orientation de la flèche du message d'erreur
@@ -259,7 +276,6 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
     }
 
     public void remplirNouvelUtilisateur(WebDriverWait wait, String idCommune, String nomUtilisateur, String mdpUtilisateur, String mdpConfirmation, String email) throws Throwable {
-        wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "i8")));
         Map<String, WebElement> mapNouvelUtilisateur = mapNouvelUtilisateur(wait);
         LOGGER.info("Renseigne le nom utilisateur avec : " + nomUtilisateur);
         seleniumTools.sendKey(wait, mapNouvelUtilisateur.get("Nom d'utilisateur"), nomUtilisateur);
@@ -280,6 +296,14 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, boutonSupprimerCalendrier(wait, idCommune));
     }
 
+    public List<String> recuperationListSousOnglet(WebDriverWait wait){
+        List<String> listSousOngletString = new ArrayList<>();
+        for(WebElement sousOnglet : listSousOnglet(wait)){
+            listSousOngletString.add(sousOnglet.getText());
+        }
+        return listSousOngletString;
+    }
+
     public void renseignerCalendrierParent(WebDriverWait wait, String idCommune, WebElement weSendKey, String nomCalendrier) throws Throwable {
         seleniumTools.sendKey(wait, weSendKey, nomCalendrier);
         WebElement we = driver.findElement(By.id(idCommune + "_6-cnt"));
@@ -289,13 +313,13 @@ public class PageRessourcesParticipantsCreer extends AbstractFullPage {
 
     public List<String> recupererListCalendrierParent(WebDriverWait wait, String idCommune) throws Throwable {
         // affichage de la comboList
-        WebElement deplierTypeException = driver.findElement(By.id(idCommune+"0b-btn"));
+        WebElement deplierTypeException = inputCalendrierParent(wait, idCommune).findElement(By.xpath("./following-sibling::i"));
         seleniumTools.clickOnElement(wait, deplierTypeException);
 
         // Attente que la list ne soit pas null
-        wait.until((ExpectedCondition<Boolean>) driver -> driver.findElement(By.xpath("//table[@id='" + idCommune + "0b-cave']//tr[1]")).getText().length() != 0);
+        wait.until((ExpectedCondition<Boolean>) driver -> driver.findElement(By.xpath("(//div[contains(@class,'z-combobox-shadow')]//tr)[1]")).getText().length() != 0);
         Thread.sleep(500);
-        List<WebElement> listWeCalendrierParent = driver.findElements(By.xpath("//table[@id='"+idCommune+"0b-cave']//tr"));
+        List<WebElement> listWeCalendrierParent = driver.findElements(By.xpath("//div[contains(@class,'z-combobox-shadow')]//tr"));
         List<String> listCalendrierParent = new ArrayList<>();
         for (WebElement we : listWeCalendrierParent){
             listCalendrierParent.add(we.getText());

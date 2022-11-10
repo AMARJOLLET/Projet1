@@ -174,9 +174,8 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
 
         LOGGER.info("Pas de test 6 -- Actions sur le message d'erreur - déplacement");
         LOGGER.info("Déplacement de la fenêtre sur le libellé nom");
-        seleniumTools.dragAndDrop(wait, pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait),
-                pageRessourcesParticipantsCreer.inputNom(wait, idCommune));
         Thread.sleep(500);
+        pageRessourcesParticipantsCreer.changementOrientationFleche(wait, idCommune);
         LOGGER.info("Vérification de la flèche");
         assertion.verifyEquals("z-arrow-u", pageRessourcesParticipantsCreer.orientationFlecheMessageErreur(wait),
                 "L'orientation de la flèche du message d'erreur n'est pas celle attendu");

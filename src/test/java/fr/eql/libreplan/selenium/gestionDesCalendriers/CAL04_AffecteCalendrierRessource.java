@@ -139,10 +139,10 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Pas de test 4 -- Accéder à l'onglet Calendrier");
         pageRessourcesParticipantsCreer.cliquerOngletCalendrier(wait, idCommune);
         LOGGER.info("Vérification champ Type");
-        assertion.verifyEquals("Dérivé du calendrier Default", pageRessourcesParticipantsCreer.inputTypeCalendrier(wait, idCommune).getText(),
+        assertion.verifyEquals("Dérivé du calendrier Default", pageRessourcesParticipantsCreer.inputTypeCalendrier(wait).getText(),
                 "Le champ type n'est pas celui attendu");
         LOGGER.info("Vérification Gauche Onglet");
-        assertion.verifyEquals("z-calendar", pageRessourcesParticipantsCreer.objetCalendrier(wait, idCommune).getAttribute("class"),
+        assertion.verifyTrue(pageRessourcesParticipantsCreer.objetCalendrier(wait).isDisplayed(),
                 "Le calendrier n'est pas présent");
         assertion.verifyEquals("Propriétés des jours", pageRessourcesParticipantsCreer.tableauProprieteDesJours(wait, idCommune).getText(),
                 "Le tableau propriété des jours n'est pas celui attendu");
@@ -150,11 +150,12 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
                 "Le bouton Supprimer le calendrier n'est pas celui attendu");
 
         LOGGER.info("Vérification sous onglet");
-        assertion.verifyEquals("Exceptions", pageRessourcesParticipantsCreer.sousOngletExceptions(wait, idCommune).getText(),
+        List<String> listSousOnglet = pageRessourcesParticipantsCreer.recuperationListSousOnglet(wait);
+        assertion.verifyEquals("Exceptions", listSousOnglet.get(0),
                 "Le sous onglet Exceptions n'est pas celui attendu");
-        assertion.verifyEquals("Semaine de travail", pageRessourcesParticipantsCreer.sousOngletSemaineDeTravail(wait, idCommune).getText(),
+        assertion.verifyEquals("Semaine de travail", listSousOnglet.get(1),
                 "Le sous onglet Semaine de travail n'est pas celui attendu");
-        assertion.verifyEquals("Périodes d'activation", pageRessourcesParticipantsCreer.sousOngletPeriodeActivation(wait, idCommune).getText(),
+        assertion.verifyEquals("Périodes d'activation", listSousOnglet.get(2),
                 "Le sous onglet Périodes d'activation n'est pas celui attendu");
 
         LOGGER.info("Vérification Bouton");
@@ -193,7 +194,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
 
         LOGGER.info("Pas de test 7 -- Vérifier l'affectation du calendrier");
         pageRessourcesParticipantsCreer.cliquerOngletCalendrier(wait, idCommune);
-        assertion.verifyEquals("Dérivé du calendrier " + nomCalendrier, pageRessourcesParticipantsCreer.inputTypeCalendrier(wait, idCommune).getText());
+        assertion.verifyEquals("Dérivé du calendrier " + nomCalendrier, pageRessourcesParticipantsCreer.inputTypeCalendrier(wait).getText());
 
         LOGGER.info("Fin du test");
 

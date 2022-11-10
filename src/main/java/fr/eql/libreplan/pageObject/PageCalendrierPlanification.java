@@ -2,6 +2,8 @@ package fr.eql.libreplan.pageObject;
 
 import fr.eql.libreplan.pageObject.PageCalendrier.projet.PageDetailProjet;
 import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
+import fr.eql.libreplan.pageObject.PageConfiguration.PageConfigurationProfils;
+import fr.eql.libreplan.pageObject.PageCout.PageCoutFeuilleDeTemps;
 import fr.eql.libreplan.pageObject.pageRessources.avancement.PageRessourcesAvancement;
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnels;
@@ -58,6 +60,16 @@ public class PageCalendrierPlanification extends AbstractFullPage{
         return getHeader().cliquerRessourcesMachines(wait, idCommune);
     }
 
+    // RESSOURCES
+
+    public PageCoutFeuilleDeTemps cliquerCoutFeuilleDeTemps(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerCoutFeuilleDeTemps(wait, idCommune);
+    }
+
+    // CONFIGURATION
+    public PageConfigurationProfils cliquerConfigurationProfil(WebDriverWait wait, String idCommune) throws Throwable {
+        return getHeader().cliquerConfigurationProfil(wait, idCommune);
+    }
 
 /*######################################################################################################################
                                                   WEBELEMENT

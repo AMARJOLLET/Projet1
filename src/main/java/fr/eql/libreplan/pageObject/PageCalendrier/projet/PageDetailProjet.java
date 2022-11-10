@@ -190,7 +190,7 @@ public class PageDetailProjet extends AbstractFullPage {
     }
 
     public List<Map<String, WebElement>> ordreValeurTableau(WebDriverWait wait){
-        return outilsProjet.ordreValeurTableau(listLibelleTableauWBS(wait), listRowTableauWBS(wait));
+        return outilsProjet.ordreValeurTableauInput(listLibelleTableauWBS(wait), listRowTableauWBS(wait));
     }
 
     // POPUP ENREGISTRER

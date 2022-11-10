@@ -1,6 +1,7 @@
 package utils;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -84,10 +85,18 @@ public class OutilsProjet extends Logging {
         return date = date.substring(5,7) + "/" + MMsans0 + "/" + date.substring(0,4);
     }
 
-
+    // RECUPERATION DE L'ID DYNAMIQUE
     public String retournerIdCommune(WebDriverWait wait){
-        WebElement elementWithID = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div)[1]")));
-        String idCommune = elementWithID.getAttribute("id").substring(0,4);
+        String idCommune = null;
+        for (int i = 0; i<4; i++){
+            try {
+                WebElement elementWithID = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div)[1]")));
+                idCommune = elementWithID.getAttribute("id").substring(0,4);
+                break;
+            } catch (StaleElementReferenceException e){
+                LOGGER.warn("StaleElementReferenceException, retry -- " + (i+1));
+            }
+        }
         LOGGER.info("Récupération de l'id commune : " + idCommune);
         return idCommune;
     }
@@ -113,6 +122,45 @@ public class OutilsProjet extends Logging {
         }
     }
 
+    public String recupererValeurParDefautSelect(WebElement we){
+        WebElement weSelected = we.findElement(By.xpath("./option[@selected=\"selected\"]"));
+        return weSelected.getText();
+    }
+
+    /// TABLEAU AVEC TEXT
+    public Map<String, Map<String, WebElement>> recuperationValeurTableauText(String KeyRow,List<WebElement> listLibelle, List<WebElement> listRow){
+        Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = new HashMap<>();
+
+        LOGGER.info("Recupération de " + listRow.size() + " rows");
+        for(WebElement row : listRow){
+            Map<String, WebElement> mapValeurRow = new HashMap<>();
+            List<WebElement> listValeurRow = row.findElements(By.xpath("./td"));
+            for(int i = 0; i < listLibelle.size(); i++){
+                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i));
+            }
+            mapRecuperationValeurTableau.put(mapValeurRow.get(KeyRow).getText(), mapValeurRow);
+        }
+        return mapRecuperationValeurTableau;
+    }
+
+    public List<Map<String, WebElement>> ordreValeurTableauText(String KeyRow,List<WebElement> listLibelle, List<WebElement> listRow){
+        List<Map<String, WebElement>> mapRecuperationValeurTableau = new ArrayList<>();
+
+        LOGGER.info("Recupération de " + listRow.size() + " rows");
+        for(WebElement row : listRow){
+            Map<String, WebElement> mapValeurRow = new HashMap<>();
+            List<WebElement> listValeurRow = row.findElements(By.xpath("./td"));
+            for(int i = 0; i < listLibelle.size(); i++){
+                mapValeurRow.put(listLibelle.get(i).getText(), listValeurRow.get(i));
+            }
+            mapRecuperationValeurTableau.add(mapValeurRow);
+        }
+        return mapRecuperationValeurTableau;
+    }
+
+
+    /// TABLEAU AVEC INPUT
+
     public Map<String, Map<String, WebElement>> recuperationValeurTableauInput(List<WebElement> listLibelle, List<WebElement> listRow){
         Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = new HashMap<>();
 
@@ -130,7 +178,7 @@ public class OutilsProjet extends Logging {
         return mapRecuperationValeurTableau;
     }
 
-    public List<Map<String, WebElement>> ordreValeurTableau(List<WebElement> listLibelle, List<WebElement> listRow){
+    public List<Map<String, WebElement>> ordreValeurTableauInput(List<WebElement> listLibelle, List<WebElement> listRow){
         List<Map<String, WebElement>> listRecuperationValeurTableau = new ArrayList<>();
 
         LOGGER.info("Recupération de " + listRow.size() + " rows");

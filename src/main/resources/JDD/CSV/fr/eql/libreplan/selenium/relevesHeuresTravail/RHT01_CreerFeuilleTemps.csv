@@ -1,0 +1,8 @@
+username,password
+admin,admin
+Nom,Modèle,Code,checkboxCode,Date de début,Echeance,Client,Calendrier
+PROJET_TEST_TEMPS,,PRJTESTTEMPS001,false,5,15,,Default
+Code,Prénom,Nom,ID,Type,Utilisateur lié,Nom d'utilisateur,Mot de passe,Email
+true,Pre,Requis,PreRequis,Ressource normale,Créer un nouvel utilisateur,PreRequis,PreRequis,PreRequis@test.fr
+Date,Ressource,Tâche,Heures,Types d'heures,Réalisé
+3,Requis.Pre (PreRequis),,8,Default,true
