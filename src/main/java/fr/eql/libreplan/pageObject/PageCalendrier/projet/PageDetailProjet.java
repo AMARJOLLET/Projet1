@@ -35,7 +35,7 @@ public class PageDetailProjet extends AbstractFullPage {
     //WBS
     public WebElement inputNouvelleTacheWBS(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text()='Nouvelle tâche']/ancestor::tr[1]//input[@class='z-textbox']")));
+                "//span[text()='Nouvelle tâche']/ancestor::tr//input[@class='z-textbox']")));
     }
 
     public WebElement inputHeuresWBS(WebDriverWait wait){

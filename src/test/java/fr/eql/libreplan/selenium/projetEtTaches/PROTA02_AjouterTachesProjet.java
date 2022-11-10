@@ -213,5 +213,8 @@ public class PROTA02_AjouterTachesProjet extends AbstractTestSelenium {
         LOGGER.info("Pas de test 10 -- Visualisation de la planification du projet");
         pageDetailProjet.cliquerOngletPlanificationDeProjet(wait, idCommune);
 
+        Thread.sleep(5000);
+        LOGGER.info("FIN DU TEST");
+
     }
 }

@@ -80,7 +80,7 @@ public abstract class AbstractTestSelenium extends Logging {
         LOGGER.info("Arret du driver ...");
         driver.quit();
         LOGGER.info("Arret du driver effectué");
-        //saveAndCleanLogFiles();
+        saveAndCleanLogFiles();
     }
 
 

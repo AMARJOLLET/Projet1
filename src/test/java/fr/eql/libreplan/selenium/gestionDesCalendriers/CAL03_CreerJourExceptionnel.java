@@ -193,15 +193,17 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         Map<String, List<String>> mapRecuperationCouleurCss = pageRessourcesJoursExceptionnelsCreer.recuperationCouleurDisponible(wait, idCommune);
         Select select = new Select(pageRessourcesJoursExceptionnelsCreer.selectCouleur(wait, idCommune));
         LOGGER.info("Verification des couleurs");
-        for(Map.Entry <String, List<String>> map : mapRecuperationCouleurCss.entrySet()){
-            select.selectByVisibleText(map.getKey());
-            Thread.sleep(100);
-            List<String> couleurCssCorrespondance = map.getValue();
-            LOGGER.info("Verification de la couleur : " + map.getKey());
-            assertion.verifyEquals(couleurCssCorrespondance.get(0), pageRessourcesJoursExceptionnelsCreer.couleurFonce(wait, idCommune).getCssValue("background-color"),
-                    "La couleur " + map.getKey() + " foncé ne correspond pas à celle selectionné");
-            assertion.verifyEquals(couleurCssCorrespondance.get(1), pageRessourcesJoursExceptionnelsCreer.couleurClair(wait, idCommune).getCssValue("background-color"),
-                    "La couleur "+ map.getKey() +" clair ne correspond pas à celle selectionné");
+        if (navigateur == "chrome"){
+            for(Map.Entry <String, List<String>> map : mapRecuperationCouleurCss.entrySet()){
+                select.selectByVisibleText(map.getKey());
+                Thread.sleep(100);
+                List<String> couleurCssCorrespondance = map.getValue();
+                LOGGER.info("Verification de la couleur : " + map.getKey());
+                assertion.verifyEquals(couleurCssCorrespondance.get(0), pageRessourcesJoursExceptionnelsCreer.couleurFonce(wait, idCommune).getCssValue("background-color"),
+                        "La couleur " + map.getKey() + " foncé ne correspond pas à celle selectionné");
+                assertion.verifyEquals(couleurCssCorrespondance.get(1), pageRessourcesJoursExceptionnelsCreer.couleurClair(wait, idCommune).getCssValue("background-color"),
+                        "La couleur "+ map.getKey() +" clair ne correspond pas à celle selectionné");
+            }
         }
         select.selectByVisibleText(couleur);
 
