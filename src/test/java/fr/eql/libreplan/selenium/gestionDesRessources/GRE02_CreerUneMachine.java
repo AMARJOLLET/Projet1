@@ -13,8 +13,6 @@ import java.util.Objects;
 
 public class GRE02_CreerUneMachine extends AbstractTestSelenium {
     // Chargement JDD
-    protected String className = getClass().getSimpleName();
-    protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
     protected String username = listJdd.get(0).get("username");

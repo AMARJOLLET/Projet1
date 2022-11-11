@@ -15,10 +15,9 @@ import java.util.Objects;
 
 public class GUP01_GestionProfil extends AbstractTestSelenium {
     // Chargement JDD
-    protected String className = getClass().getSimpleName();
-    protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
+    // Connexion
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 

@@ -6,40 +6,74 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Logging {
-    public String className;
+    public String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH-mm-ss"));
     public Logger LOGGER;
-    protected String currentClassPath;
-    protected String logsDirectory;
+    public String className = getClass().getSimpleName();
+    public String pathLog4j2 = "src/main/resources/log4j2.xml";
+    public String tempDir = "target/logs/temp";
+    public String tempName = "temp-" + date;
 
 
     public Logging() {
-        this.className = this.getClass().getSimpleName();
-        currentClassPath = getClass().getName().replace(".", "/");
-        System.setProperty("logFileName", this.className);
-        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-        File file = new File("src/main/resources/log4j2.properties");
-        context.setConfigLocation(file.toURI());
+        System.setProperty("tempDir", tempDir);
+        System.setProperty("tempName", tempName);
         LOGGER = LoggerFactory.getLogger(className);
     }
 
-    protected String selectTestClassPath() {
-        String testClassPath = null;
-        Path s = Paths.get(currentClassPath);
-        int n = s.getNameCount();
-        while (n > 1) {
-            s = s.getParent();
-            n -= 1;
-            if (s.toString().endsWith("test")) {
-                testClassPath = Paths.get(currentClassPath).getParent().toString().replace("\\", "/");
-                break;
-            } else {
-                testClassPath = "notATestClass";
+    public void setupLoggin(){
+        File file = new File(pathLog4j2);
+        LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        context.setConfigLocation(file.toURI());
+    }
+
+    public void createAndCleanLogFile(String className, String classPackage) {
+        createLogFile(className, classPackage);
+        cleanTempLogFile();
+    }
+
+    public void createLogFile(String className, String classPackage) {
+        classPackage = classPackage.replace(".", "/");
+        String logPath = "target/logs/" + classPackage + className + "." + date + ".log";
+        File logFile = new File(logPath);
+        try {
+            if (!logFile.exists()) {
+                logFile.getParentFile().mkdirs();
+                logFile.createNewFile();
+            }
+        } catch (IOException ex) {
+            LOGGER.error("error : " + ex);
+        }
+        try {
+            Files.copy(Paths.get(tempDir + "/" + tempName + ".log"), Paths.get(logPath), REPLACE_EXISTING);
+        } catch (IOException ex) {
+            LOGGER.error("error : " + ex);
+        }
+
+    }
+
+    public void cleanTempLogFile() {
+        File dir = new File(tempDir);
+        File[] files = dir.listFiles();
+
+        for(File fileSearched : files){
+            if(!fileSearched.getName().contains(tempName)){
+                fileSearched.delete();
             }
         }
-        return testClassPath;
     }
+
+
+
 }

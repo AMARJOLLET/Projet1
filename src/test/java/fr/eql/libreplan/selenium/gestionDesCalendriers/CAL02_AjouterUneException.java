@@ -14,10 +14,9 @@ import java.util.Map;
 
 public class CAL02_AjouterUneException extends AbstractTestSelenium {
     // Chargement JDD
-    protected String className = getClass().getSimpleName();
-    protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
+    // Connexion
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
@@ -30,10 +29,8 @@ public class CAL02_AjouterUneException extends AbstractTestSelenium {
     protected String effortNormal = listJdd.get(1).get("effortNormal");
     protected String effortHeuresSupplementaire = listJdd.get(1).get("effortHeuresSupplementaire");
 
-
-
     // Generation date
-    String dateDuJour = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    protected String dateDuJour = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 
     public CAL02_AjouterUneException() throws IOException {

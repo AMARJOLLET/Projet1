@@ -1,6 +1,7 @@
 package fr.eql.libreplan.selenium;
 
-import fr.eql.libreplan.AbstractTest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -8,11 +9,17 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.LoggerFactory;
 import utils.*;
 
+import java.io.File;
 import java.time.Duration;
 
 public abstract class AbstractTestSelenium extends Logging {
+    protected String className = getClass().getSimpleName();
+    protected String classPackage = getClass().getPackage().getName();
+    protected String classPackageLogs = getClass().getName();
+
     // Driver
     protected WebDriver driver;
     protected WebDriverWait wait;
@@ -35,12 +42,8 @@ public abstract class AbstractTestSelenium extends Logging {
 
     @BeforeEach
     void startup() {
-        LOGGER.info("Setup LOGGER ...");
-        System.setProperty("logFileName", this.className);
-        LOGGER.info("Setup LOGGER effectué");
 
         LOGGER.info("Setup Choix driver " + navigateur + " ...");
-
         switch (navigateur.toLowerCase()) {
             case "firefox" :
                 System.setProperty("webdriver.gecko.driver", "src/main/resources/driver/geckodriver.exe");
@@ -80,7 +83,8 @@ public abstract class AbstractTestSelenium extends Logging {
         LOGGER.info("Arret du driver ...");
         driver.quit();
         LOGGER.info("Arret du driver effectué");
-        saveAndCleanLogFiles();
+        LOGGER.info("Generate log file");
+        createAndCleanLogFile(className, classPackageLogs);
     }
 
 

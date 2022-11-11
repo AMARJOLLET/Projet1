@@ -15,29 +15,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OutilsProjet extends Logging {
-    Logger LOGGER = LoggerFactory.getLogger(className);
-
-
-    public Map<String, String> chargementCSVJDD(String classPackage, String className) throws IOException {
-        String classPath = classPackage.replace(".", "/");
-        String csvFilePath = "src/main/resources/JDD/csv/" + classPath + "/" + className + ".csv";
-        Map<String, String> jdd = new HashMap<>();
-        LOGGER.info("---------- Fichier JDD chargé : " + csvFilePath + " ----------");
-        List<String[]> list =
-                Files.lines(Paths.get(csvFilePath))
-                        .map(line -> line.split("\\\\r?\\\\n"))
-                        .collect(Collectors.toList());
-        if (list.size() > 2) {
-            LOGGER.error("***** Mauvais format de fichier CSV - trop de lignes (2 lignes attendues : 1 ligne keys et 1 ligne values *****");
-        }
-        String[] titres = list.get(0)[0].split(",");
-        String[] valeurs = list.get(1)[0].split((","));
-        for (int i = 0; i < titres.length; i++) {
-            jdd.put(titres[i], valeurs[i]);
-        }
-        jdd.forEach((key, value) -> LOGGER.info(key + " = " + value));
-        return jdd;
-    }
 
     public ArrayList<Map<String, String>> loadCsvSeveralJDD (String classPackage, String className) throws IOException {
         String classPath = classPackage.replace(".", "/");
@@ -80,10 +57,6 @@ public class OutilsProjet extends Logging {
         return result;
     }
 
-    public String changementDate(String date){
-        String MMsans0 = date.substring(8,10).replace("0","");
-        return date = date.substring(5,7) + "/" + MMsans0 + "/" + date.substring(0,4);
-    }
 
     // RECUPERATION DE L'ID DYNAMIQUE
     public String retournerIdCommune(WebDriverWait wait){

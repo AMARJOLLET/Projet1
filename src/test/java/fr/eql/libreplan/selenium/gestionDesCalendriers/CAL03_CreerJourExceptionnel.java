@@ -18,10 +18,9 @@ import java.util.Objects;
 
 public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
     // Chargement JDD
-    protected String className = getClass().getSimpleName();
-    protected String classPackage = this.getClass().getPackage().getName();
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
+    // Connexion
     protected String username = listJdd.get(0).get("username");
     protected String password = listJdd.get(0).get("password");
 
@@ -101,7 +100,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         assertion.verifyTrue(pageRessourcesJoursExceptionnelsCreer.checkboxCode(wait, idCommune).isSelected(),
                 "La checkbox du code n'est pas coché");
         assertion.verifyEquals("", pageRessourcesJoursExceptionnelsCreer.inputNom(wait, idCommune).getAttribute("value"),
-                "l'input name n'est pas vide");
+                "l'input Nom n'est pas vide");
         assertion.verifyEquals("Exception particulière", pageRessourcesJoursExceptionnelsCreer.couleurException(wait, idCommune).get(0),
                 "Le champ texte associé à la couleur n'est pas celui attendu");
         assertion.verifyEquals("Exception héritée", pageRessourcesJoursExceptionnelsCreer.couleurException(wait, idCommune).get(1),
@@ -162,7 +161,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         assertion.verifyTrue(pageRessourcesJoursExceptionnelsCreer.checkboxCode(wait, idCommune).isSelected(),
                 "La checkbox du code n'est pas coché");
         assertion.verifyEquals("", pageRessourcesJoursExceptionnelsCreer.inputNom(wait, idCommune).getAttribute("value"),
-                "l'input name n'est pas vide");
+                "l'input Nom n'est pas vide");
         assertion.verifyEquals("Exception particulière", pageRessourcesJoursExceptionnelsCreer.couleurException(wait, idCommune).get(0),
                 "Le champ texte associé à la couleur n'est pas celui attendu");
         assertion.verifyEquals("Exception héritée", pageRessourcesJoursExceptionnelsCreer.couleurException(wait, idCommune).get(1),

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="LogConfig">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5.5p | %-5.5L | %-40.40c{1} : %msg%n</pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile
+                name="RollingFile"
+                fileName="${sys:tempDir}/${sys:tempName}.log"
+                filePattern="${sys:tempDir}/${sys:tempName}.log.gz">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5.5p | %-5.5L | %-40.40c{1} : %msg%n</pattern>
+            </PatternLayout>
+            <Policies/>
+<!--            <DefaultRolloverStrategy>-->
+<!--                <Delete basePath="/target/logs/temps" maxDepth="1">-->
+<!--                    <IfFileName glob="*.log*">-->
+<!--                        <IfAny>-->
+<!--                            <IfAccumulatedFileSize exceeds="500 MB" />-->
+<!--                            <IfAccumulatedFileCount exceeds="1" />-->
+<!--                        </IfAny>-->
+<!--                    </IfFileName>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
