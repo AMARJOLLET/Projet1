@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class PageRessourcesCriteresCreer extends AbstractFullPage {
     public PageRessourcesCriteresCreer(WebDriver driver) {
@@ -17,19 +18,30 @@ public class PageRessourcesCriteresCreer extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
-    // Message Création
-    public String messageCreation(WebDriverWait wait, String nom){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]"))).getText();
-    }
 
+
+/*######################################################################################################################
+                                                  WEBELEMENT
+######################################################################################################################*/
     // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "15-cnt"))).getText();
+    public WebElement titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "15-cnt")));
     }
 
-    public String titreFormulaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "45-hm"))).getText();
+    public boolean titreDeLaPageApresModification(WebDriverWait wait, String nouveau){
+        Function<WebDriver, Boolean> titrePageModifier = driver -> driver.findElement(By.xpath("//*[contains(text(),'"+nouveau+"')]")).isDisplayed();
+        return wait.until(titrePageModifier);
+    }
+
+    public WebElement titreFormulaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "45-hm")));
+    }
+
+
+    // Message Création
+    public WebElement messageCreation(WebDriverWait wait, String nom){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]")));
     }
 
 
@@ -48,29 +60,11 @@ public class PageRessourcesCriteresCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j6-box")));
     }
 
-    // Methode clique sur Bouton
-    public PageRessourcesCriteres cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
-        return new PageRessourcesCriteres(driver);
-    }
 
-    public PageRessourcesCriteres cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
-        return new PageRessourcesCriteres(driver);
-    }
-
-    public void cliquerBoutonSauverEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonSauverEtContinuer(wait, idCommune));
-    }
-
-    // Formulaire WebElement
-    public List<String> listLibelleFormulaire(WebDriverWait wait, String idCommune){
-        List<String> strListLibelle = new ArrayList<>();
-        List<WebElement> listLibelle = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//tbody[@id='"+ idCommune + "b5']//span[@class='z-label']")));
-        for (WebElement webElement : listLibelle) {
-            strListLibelle.add(webElement.getText());
-        }
-        return strListLibelle;
+    // Formulaire
+    public List<WebElement> listLibelleFormulaire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(
+                "//div[@class='z-tabbox']//tbody[@class='z-rows']//span[@class='z-label']")));
     }
 
     public WebElement inputNom(WebDriverWait wait, String idCommune){
@@ -97,6 +91,32 @@ public class PageRessourcesCriteresCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t5")));
     }
 
+/*######################################################################################################################
+                                                  METHODES
+######################################################################################################################*/
+    // Methode clique sur Bouton
+    public PageRessourcesCriteres cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
+        return new PageRessourcesCriteres(driver);
+    }
+
+    public PageRessourcesCriteres cliquerBoutonEnregistrer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonEnregistrer(wait, idCommune));
+        return new PageRessourcesCriteres(driver);
+    }
+
+    public void cliquerBoutonSauverEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonSauverEtContinuer(wait, idCommune));
+    }
+
+    // Formulaire WebElement
+    public List<String> recuperationLibelleFormulaire(WebDriverWait wait){
+        List<String> strListLibelle = new ArrayList<>();
+        for (WebElement webElement : listLibelleFormulaire(wait)) {
+            strListLibelle.add(webElement.getText());
+        }
+        return strListLibelle;
+    }
 
     // Formulaire Methodes
     public void remplirNomFormulaire(WebDriverWait wait, String idCommune, String nom) throws Throwable {
@@ -127,9 +147,4 @@ public class PageRessourcesCriteresCreer extends AbstractFullPage {
         LOGGER.info("Fin du formulaire");
 
     }
-
-
-
-
-
 }

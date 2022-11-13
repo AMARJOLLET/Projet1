@@ -5,6 +5,7 @@ import fr.eql.libreplan.pageObject.PageCalendrier.PageListeDesProjets;
 import fr.eql.libreplan.pageObject.PageCalendrierPlanification;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
@@ -158,6 +159,9 @@ public class PROTA02_AjouterTachesProjet extends AbstractTestSelenium {
             LOGGER.info("Formulaire rempli");
             pageDetailProjet.cliquerBoutonAjouterWBS(wait);
             LOGGER.info("Formulaire enregistré");
+
+            // Firefox -- random click
+            seleniumTools.clickOnElement(wait, driver.findElement(By.xpath("//strong")));
         }
         Thread.sleep(500);
         List<Map<String, WebElement>> ordreValeurTableau = pageDetailProjet.ordreValeurTableau(wait);

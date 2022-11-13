@@ -7,6 +7,7 @@ import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessour
 import fr.eql.libreplan.pageObject.pageRessources.joursExceptionnels.PageRessourcesJoursExceptionnelsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 import java.io.IOException;
@@ -17,6 +18,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyage = "select name from base_calendar where name='??';";
+    protected String queryNettoyageJourEx = "select name from calendar_exception_type where name='??';";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -53,10 +58,10 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         PageRessourcesJoursExceptionnels pageRessourcesJoursExceptionnels = pageCalendrierPlanification.cliquerRessourcesJoursExceptionnels(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Récupération des libellés du tableau");
-        List<String> listLibelleTableau = pageRessourcesJoursExceptionnels.recuperationLibelleTableau(idCommune);
+        List<String> listLibelleTableau = pageRessourcesJoursExceptionnels.recuperationLibelleTableau(wait);
         LOGGER.info("Récupération des libellés du tableau");
         assertion.verifyEquals("Nom", listLibelleTableau.get(0),
                 "Le libelle n'est pas celui attendu");
@@ -70,8 +75,13 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
                 "Le libelle n'est pas celui attendu");
         assertion.verifyEquals("Opérations", listLibelleTableau.get(5),
                 "Le libelle n'est pas celui attendu");
+
         LOGGER.info("Nettoyage si nécessaire");
-        pageRessourcesJoursExceptionnels.verificationNettoyageTableau(wait, idCommune, nomJourExceptionnel);
+        queryNettoyageJourEx = outilsManipulationDonnee.formatageQuery(queryNettoyageJourEx, nomJourExceptionnel);
+        LOGGER.info("Query setup " + queryNettoyageJourEx);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyageJourEx);
+        LOGGER.info("Reprise du cas de test");
+
 
         LOGGER.info("Pas de test 3 -- Accéder au formulaire de création d'un jour exceptionnel du calendrier");
         PageRessourcesJoursExceptionnelsCreer pageRessourcesJoursExceptionnelsCreer = pageRessourcesJoursExceptionnels.cliquerBoutonCreer(wait, idCommune);
@@ -126,10 +136,10 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnels = pageRessourcesJoursExceptionnelsCreer.cliquerBoutonAnnuler(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Recupération des valeurs du tableau");
-        Map<String, Map<String, String>> mapValeurTableauCalendrier = pageRessourcesJoursExceptionnels.recuperationValeurTableauJourExceptionnel(idCommune);
+        Map<String, Map<String, WebElement>> mapValeurTableauCalendrier = pageRessourcesJoursExceptionnels.recuperationValeurTableauJourExceptionnel(wait);
         LOGGER.info("Vérification");
         assertion.verifyFalse(mapValeurTableauCalendrier.containsKey(nomJourExceptionnel),
                 "Le tableau contient " + nomJourExceptionnel);
@@ -181,7 +191,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
                 "Le bouton Enregistrer et continuer n'est pas celui attendu");
 
         LOGGER.info("Pas de test 6 -- Vérifier l'alimentation du champ Code");
-        code = outilsProjet.ajouterUnAuCode(wait, code);
+        code = outilsProjet.ajouterUnAuCode(code);
         LOGGER.info("Verification du code");
         assertion.verifyEquals(code, pageRessourcesJoursExceptionnelsCreer.inputCode(wait, idCommune).getAttribute("value"));
 
@@ -192,7 +202,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         Map<String, List<String>> mapRecuperationCouleurCss = pageRessourcesJoursExceptionnelsCreer.recuperationCouleurDisponible(wait, idCommune);
         Select select = new Select(pageRessourcesJoursExceptionnelsCreer.selectCouleur(wait, idCommune));
         LOGGER.info("Verification des couleurs");
-        if (navigateur == "chrome"){
+        if (Objects.equals(navigateur, "chrome")){
             for(Map.Entry <String, List<String>> map : mapRecuperationCouleurCss.entrySet()){
                 select.selectByVisibleText(map.getKey());
                 Thread.sleep(100);
@@ -260,19 +270,27 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         pageRessourcesJoursExceptionnels = pageRessourcesJoursExceptionnelsCreer.cliquerBoutonEnregistrer(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Jours exceptionnels du calendrier Liste", pageRessourcesJoursExceptionnels.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Vérification du message d'enregistrement");
-        assertion.verifyEquals("Jour du calendrier exceptionnel \"" + nomJourExceptionnel + "\" enregistré", pageRessourcesJoursExceptionnels.messageCreation(wait, nomJourExceptionnel),
+        assertion.verifyEquals("Jour du calendrier exceptionnel \"" + nomJourExceptionnel + "\" enregistré",
+                pageRessourcesJoursExceptionnels.messageCreation(wait, nomJourExceptionnel).getText(),
                 "Le message d'enregistrement n'est pas celui attendu");
         LOGGER.info("Récupération des valeurs du tableau");
-        Map<String, String> mapValeurTableau = pageRessourcesJoursExceptionnels.recuperationValeurTableauJourExceptionnel(idCommune).get(nomJourExceptionnel);
+        Map<String, WebElement> mapValeurTableau = pageRessourcesJoursExceptionnels.recuperationValeurTableauJourExceptionnel(wait).get(nomJourExceptionnel);
         LOGGER.info("Vérification des valeurs créées du tableau");
-        assertion.verifyEquals(nomJourExceptionnel, mapValeurTableau.get("Nom"));
-        assertion.verifyEquals(couleur, mapValeurTableau.get("Couleur"));
-        assertion.verifyEquals("No", mapValeurTableau.get("Sur-affecté"));
-        assertion.verifyEquals(nombreEffortStandartHeure + ":" + nombreEffortStandartMinute, mapValeurTableau.get("Effort standard"));
-        assertion.verifyEquals(nombreEffortSupplementaireHeure + ":" + nombreEffortSupplementaireMinute, mapValeurTableau.get("Effort en heures supplémentaires"));
+        assertion.verifyEquals(nomJourExceptionnel, mapValeurTableau.get("Nom").getText(),
+                "La valeur du Nom du tableau des jours exceptionnels n'est pas celle attendu");
+        assertion.verifyEquals(couleur, mapValeurTableau.get("Couleur").getText(),
+                "La valeur de la couleur du tableau des jours exceptionnels n'est pas celle attendu");
+        assertion.verifyEquals("No", mapValeurTableau.get("Sur-affecté").getText(),
+                "La valeur de Sur-affecté du tableau des jours exceptionnels n'est pas celle attendu");
+        assertion.verifyEquals(nombreEffortStandartHeure + ":" + nombreEffortStandartMinute,
+                mapValeurTableau.get("Effort standard").getText(),
+                "La valeur de l'Effort standard du tableau des jours exceptionnels n'est pas celle attendu");
+        assertion.verifyEquals(nombreEffortSupplementaireHeure + ":" + nombreEffortSupplementaireMinute,
+                mapValeurTableau.get("Effort en heures supplémentaires").getText(),
+                "La valeur de l'Effort en heures supplémentaires du tableau des jours exceptionnels n'est pas celle attendu");
 
         LOGGER.info("Pas de test 13 -- Accéder à la page d'administration des calendriers");
         PageRessourcesCalendrier pageRessourcesCalendrier = pageRessourcesJoursExceptionnels.cliquerRessourcesCalendrier(wait, idCommune);
@@ -280,8 +298,13 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         methodesProjet.VerificationPageAdministrationCalendriers(wait);
 
         LOGGER.info("Pas de test 14 -- Accéder à la page de modification d'un calendrier");
-        LOGGER.info("Nettoyage si nécessaire avant la création");
-        pageRessourcesCalendrier.verificationNettoyageTableauCAL2(wait, idCommune, nomCalendrier);
+
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyage = outilsManipulationDonnee.formatageQuery(queryNettoyage, nomCalendrier);
+        LOGGER.info("Query setup " + queryNettoyage);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyage);
+        LOGGER.info("Reprise du cas de test");
+
         LOGGER.info("Etape supplémentaire -- Creation d'un calendrier");
         methodesProjet.creationCalendrier(wait, idCommune, nomCalendrier, codeCalendrier);
         LOGGER.info("Reprise du cas de test -- Modification calendrier");
@@ -290,7 +313,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = new PageRessourcesCalendrierCreer(driver);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page de modification du calendrier et du formulaire");
-        assertion.verifyEquals("Modifier Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Modifier Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
 
         LOGGER.info("Pas de test 15 -- Vérifier la disponibilité du jour exceptionnel");
@@ -301,7 +324,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         }
         LOGGER.info("Vérication si " + nomJourExceptionnel + " est présent dans la liste");
         assertion.verifyTrue(listTypeException.contains(nomJourExceptionnel),
-                "");
+                "Le nom du jour exceptionnel n'est pas retrouvé dans la liste des types exception");
 
         LOGGER.info("Pas de test 16 -- Créer une exception avec le jour exceptionnel - sélection du jour exceptionnel");
         String dateDeDebut = pageRessourcesCalendrierCreer.inputDateDeDebut(wait, idCommune).getAttribute("value");
@@ -311,20 +334,24 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         seleniumTools.clickOnElement(wait, pageRessourcesCalendrierCreer.inputNom(wait, idCommune));
         Thread.sleep(500);
         LOGGER.info("Vérification des valeurs renseignées et celle de l'exception créée");
-        assertion.verifyEquals(nombreEffortStandartHeure, pageRessourcesCalendrierCreer.inputEffortNormal(wait, idCommune).getAttribute("value"),
+        assertion.verifyEquals(nombreEffortStandartHeure,
+                pageRessourcesCalendrierCreer.inputEffortNormal(wait, idCommune).getAttribute("value"),
                 "Le champ effort standart Heure n'a pas la valeur attendu");
-        assertion.verifyEquals(nombreEffortStandartMinute, pageRessourcesCalendrierCreer.inputEffortNormalMinute(wait, idCommune).getAttribute("value"),
+        assertion.verifyEquals(nombreEffortStandartMinute,
+                pageRessourcesCalendrierCreer.inputEffortNormalMinute(wait, idCommune).getAttribute("value"),
                 "Le champ effort standart Minute n'a pas la valeur attendu");
-        assertion.verifyEquals(nombreEffortSupplementaireHeure, pageRessourcesCalendrierCreer.inputEffortHeuresSupplementaires(wait, idCommune).getAttribute("value"),
+        assertion.verifyEquals(nombreEffortSupplementaireHeure,
+                pageRessourcesCalendrierCreer.inputEffortHeuresSupplementaires(wait, idCommune).getAttribute("value"),
                 "Le champ effort Supplémentaire Heure n'a pas la valeur attendu");
-        assertion.verifyEquals(nombreEffortSupplementaireMinute, pageRessourcesCalendrierCreer.inputEffortHeuresSupplementairesMinute(wait, idCommune).getAttribute("value"),
+        assertion.verifyEquals(nombreEffortSupplementaireMinute,
+                pageRessourcesCalendrierCreer.inputEffortHeuresSupplementairesMinute(wait, idCommune).getAttribute("value"),
                 "Le champ effort Supplémentaire minute n'a pas la valeur attendu");
 
         LOGGER.info("Pas de test 17 -- ");
         pageRessourcesCalendrierCreer.cliquerBoutonCreerException(wait, idCommune);
         LOGGER.info("Recuperation de l'exception créé");
         Thread.sleep(1000);
-        Map<String, String> mapValeurException = pageRessourcesCalendrierCreer.recuperationValeurException(wait, idCommune);
+        Map<String, String> mapValeurException = pageRessourcesCalendrierCreer.recuperationValeurException(wait, idCommune).get(dateDuJour + " - " + nomJourExceptionnel);
         LOGGER.info("Verification de l'exception créé");
         assertion.verifyEquals(dateDuJour, mapValeurException.get("Jour"),
                 "La date de creation de l'exception n'est pas celle attendu");
@@ -341,7 +368,7 @@ public class CAL03_CreerJourExceptionnel extends AbstractTestSelenium {
         assertion.verifyEquals("Direct", mapValeurException.get("Origine"),
                 "L'origine de l'exception n'est pas vide");
         LOGGER.info("Recupération du tableau propriétés des jours");
-        Map<String, String> mapValeurProprieteJour = pageRessourcesCalendrierCreer.recuperationValeurProprieteJours(idCommune);
+        Map<String, String> mapValeurProprieteJour = pageRessourcesCalendrierCreer.recuperationProprieteJours(wait);
         LOGGER.info("Verification du tableau propriétés des jours");
         assertion.verifyEquals(dateDeDebut, mapValeurProprieteJour.get("Jour"),
                 "Le jour du tableau des propriétés des jours n'est pas celui attendu");

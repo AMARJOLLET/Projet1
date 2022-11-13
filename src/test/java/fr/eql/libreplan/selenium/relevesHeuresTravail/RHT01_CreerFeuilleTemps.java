@@ -187,17 +187,18 @@ public class RHT01_CreerFeuilleTemps extends AbstractTestSelenium {
                 "Le troisième bloc n'est pas celui attendu");
 
         LOGGER.info("Vérification du bloc Données générales");
-        assertion.verifyEquals("Type", pageCoutFeuilleDeTempsCreer.libelleType(wait, idCommune).getText(),
+        Map<String, WebElement> mapTableauDonneeGeneral = pageCoutFeuilleDeTempsCreer.recuperationTableauDonneeGeneral(wait);
+        assertion.verifyTrue(mapTableauDonneeGeneral.containsKey("Type"),
                 "Le libelle type n'est pas celui attendu");
-        assertion.verifyEquals(cavenas, pageCoutFeuilleDeTempsCreer.valeurType(wait, idCommune).getText(),
+        assertion.verifyEquals(cavenas, mapTableauDonneeGeneral.get("Type").getText(),
                 "La valeur de type n'est pas celui attendu");
-        assertion.verifyEquals("Code", pageCoutFeuilleDeTempsCreer.libelleCode(wait, idCommune).getText(),
-                "Le libelle code n'est pas celui attendu");
-        assertion.verifyFalse(Objects.equals(pageCoutFeuilleDeTempsCreer.valeurCode(wait, idCommune).getAttribute("value"),""),
+        assertion.verifyTrue(mapTableauDonneeGeneral.containsKey("Code"),
+                "Le libelle Code n'est pas celui attendu");
+        assertion.verifyFalse(Objects.equals(mapTableauDonneeGeneral.get("Code").getAttribute("value"),""),
                 "La valeur de code est vide");
-        assertion.verifyEquals("Générer le code", pageCoutFeuilleDeTempsCreer.libelleCheckboxCode(wait, idCommune).getText(),
-                "Le libelle type n'est pas celui attendu");
-        assertion.verifyTrue(pageCoutFeuilleDeTempsCreer.checkboxCode(wait, idCommune).isSelected(),
+        assertion.verifyTrue(mapTableauDonneeGeneral.containsKey("Générer le code"),
+                "Le libelle Générer le code n'est pas celui attendu");
+        assertion.verifyTrue(mapTableauDonneeGeneral.get("Générer le code").isSelected(),
                 "La checkbox de Generer le code n'est pas coché");
 
         LOGGER.info("Vérification du bloc Champs Rubriques");
@@ -257,7 +258,8 @@ public class RHT01_CreerFeuilleTemps extends AbstractTestSelenium {
                 "Le bouton supprimé n'est pas présent");
 
         LOGGER.info("Pas de test 5 -- Ajouter une feuille de temps - bouton [Enregistrer]");
-        String codeLigneCreer = pageCoutFeuilleDeTempsCreer.valeurCode(wait, idCommune).getAttribute("value");
+        mapTableauDonneeGeneral = pageCoutFeuilleDeTempsCreer.recuperationTableauDonneeGeneral(wait);
+        String codeLigneCreer = mapTableauDonneeGeneral.get("Code").getAttribute("value");
         LOGGER.info("Enregistrement du code : " + codeLigneCreer);
         LOGGER.info("Remplissage du formulaire");
         pageCoutFeuilleDeTempsCreer.remplirFormulaireLigne(wait,

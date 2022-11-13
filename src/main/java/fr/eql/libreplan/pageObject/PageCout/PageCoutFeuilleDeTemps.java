@@ -2,6 +2,7 @@ package fr.eql.libreplan.pageObject.PageCout;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -39,7 +40,7 @@ public class PageCoutFeuilleDeTemps extends AbstractFullPage {
                 "//div[@class=\"clickable-rows z-grid\"]//tr[@class=\"z-columns\"]/th")));
     }
 
-    public List<WebElement> listValeurTableau(WebDriverWait wait){
+    public List<WebElement> listValeurTableau(){
         return driver.findElements(By.xpath(
                 "//div[@class=\"clickable-rows z-grid\"]//tbody[@class='z-rows']/tr"));
     }
@@ -75,8 +76,17 @@ public class PageCoutFeuilleDeTemps extends AbstractFullPage {
 
     public PageCoutFeuilleDeTempsCreer cliquerNouvelleFeuille(WebDriverWait wait, String idCommune, String cavenas) throws Throwable {
         Select select = new Select(selectCavenas(wait, idCommune));
-        select.selectByVisibleText(cavenas);
-        seleniumTools.clickOnElement(wait, nouvelleFeuilleBouton(wait, idCommune));
+        for (int i = 0; i < 3; i++) {
+            try {
+                select.selectByVisibleText(cavenas);
+                seleniumTools.clickOnElement(wait, nouvelleFeuilleBouton(wait, idCommune));
+                LOGGER.info("Click bouton créer OK");
+                break;
+            } catch (Exception e) {
+                LOGGER.info("Element intercepté -- retry");
+                Thread.sleep(200);
+            }
+        }
         return new PageCoutFeuilleDeTempsCreer(driver);
     }
 
@@ -91,11 +101,11 @@ public class PageCoutFeuilleDeTemps extends AbstractFullPage {
     }
 
     public Map<String, Map<String, WebElement>> recuperationValeurTableau(WebDriverWait wait){
-        return outilsProjet.recuperationValeurTableauText("Code", listLibelleTableau(wait), listValeurTableau(wait));
+        return outilsProjet.recuperationValeurTableauText("Code", listLibelleTableau(wait), listValeurTableau());
     }
 
     public List<Map<String, WebElement>> ordreValeurTableauText(WebDriverWait wait){
-        return outilsProjet.ordreValeurTableauText("Code", listLibelleTableau(wait), listValeurTableau(wait));
+        return outilsProjet.ordreValeurTableauText(listLibelleTableau(wait), listValeurTableau());
     }
 
 

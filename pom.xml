@@ -16,6 +16,7 @@
         <junit.version>5.9.0</junit.version>
         <log4j2.version>2.19.0</log4j2.version>
         <commons-io>2.11.0</commons-io>
+        <postgresql>LATEST</postgresql>
         <rest.assured.version>5.2.0</rest.assured.version>
         <json.version>20201115</json.version>
         <jsonpath.version>2.6.0</jsonpath.version>
@@ -71,6 +72,14 @@
             <version>${commons-io}</version>
         </dependency>
         <!-- Snapshot -->
+        <!-- SQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql}</version>
+        </dependency>
+        <!-- SQL -->
+
         <!-- Rest -->
         <dependency>
             <groupId>io.rest-assured</groupId>

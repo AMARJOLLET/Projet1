@@ -1,21 +1,32 @@
 package utils;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class OutilsProjet extends Logging {
+public class OutilsProjet extends InstanciationDriver {
+    public OutilsProjet(WebDriver driver) {
+        super(driver);
+    }
 
+
+    // Instanciation
+    private final SeleniumTools seleniumTools = new SeleniumTools(driver);
+    private final OutilsManipulationDonnee outilsManipulationDonnee = new OutilsManipulationDonnee();
+
+
+    //
+
+
+    // Methode recuperation CSV
     public ArrayList<Map<String, String>> loadCsvSeveralJDD (String classPackage, String className) throws IOException {
         String classPath = classPackage.replace(".", "/");
         String csvFilePath = "src/main/resources/JDD/csv/" + classPath + "/" + className + ".csv";
@@ -38,23 +49,17 @@ public class OutilsProjet extends Logging {
         return listJDD;
     }
 
-    public static String generateRandomNumber(int numberOfDigit) {
-        String result;
-        do {
-            if (numberOfDigit <= 0) {
-                throw new IllegalArgumentException("A random number's length cannot be zero or negative");
+
+    public void cliquerBoutonCreer(WebDriverWait wait, WebElement we) throws Throwable {
+        for (int i = 0; i < 3; i++) {
+            try {
+                seleniumTools.clickOnElement(wait, we);
+                LOGGER.info("Click bouton créer OK");
+                break;
+            } catch (ElementClickInterceptedException e) {
+                LOGGER.info("Element intercepté -- retry");
             }
-            Random random = new Random();
-            String bound = "1";
-            StringBuilder nombre0 = new StringBuilder();
-            for (int i = 0; i < numberOfDigit; i++) {
-                nombre0.append("0");
-            }
-            bound = bound + nombre0;
-            int boundInteger = Integer.parseInt(bound);
-            result = String.format("%0" + numberOfDigit + "d", random.nextInt(boundInteger));
-        } while (Objects.equals(result,"0"));
-        return result;
+        }
     }
 
 
@@ -74,7 +79,7 @@ public class OutilsProjet extends Logging {
         return idCommune;
     }
 
-    public String ajouterUnAuCode(WebDriverWait wait, String code){
+    public String ajouterUnAuCode(String code){
         String codeRemplacer = code.substring(code.length() - 4);
         int codePlusUn = Integer.parseInt(codeRemplacer) + 1;
         String codePlusUnString = String.valueOf(codePlusUn);
@@ -100,6 +105,18 @@ public class OutilsProjet extends Logging {
         return weSelected.getText();
     }
 
+    /*
+    * METHODE SUR LES TABLEAUX
+    */
+
+    public List<String> recuperationLibelleTableau(List<WebElement> listWe) {
+        List<String> listLibelleTableauString = new ArrayList<>();
+        for (WebElement we : listWe) {
+            listLibelleTableauString.add(we.getText());
+        }
+        return listLibelleTableauString;
+    }
+
     /// TABLEAU AVEC TEXT
     public Map<String, Map<String, WebElement>> recuperationValeurTableauText(String KeyRow,List<WebElement> listLibelle, List<WebElement> listRow){
         Map<String, Map<String, WebElement>> mapRecuperationValeurTableau = new HashMap<>();
@@ -113,10 +130,11 @@ public class OutilsProjet extends Logging {
             }
             mapRecuperationValeurTableau.put(mapValeurRow.get(KeyRow).getText(), mapValeurRow);
         }
+        LOGGER.info("Recupération terminé");
         return mapRecuperationValeurTableau;
     }
 
-    public List<Map<String, WebElement>> ordreValeurTableauText(String KeyRow,List<WebElement> listLibelle, List<WebElement> listRow){
+    public List<Map<String, WebElement>> ordreValeurTableauText(List<WebElement> listLibelle, List<WebElement> listRow){
         List<Map<String, WebElement>> mapRecuperationValeurTableau = new ArrayList<>();
 
         LOGGER.info("Recupération de " + listRow.size() + " rows");
@@ -169,17 +187,77 @@ public class OutilsProjet extends Logging {
     }
 
 
-
-    // BOUTON DES TABLEAUX
-    public WebElement boutonTableauText(WebDriverWait wait, String nomRow, String titleBouton){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text() = '" + nomRow + "']/ancestor::tr//span[@title='"+titleBouton+"']")));
-    }
-
     // BOUTON DES TABLEAUX
     public WebElement boutonTableauValue(WebDriverWait wait, String nomRow, String titleBouton){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
                 "//input[@value = '" + nomRow + "']/ancestor::tr//span[@title='"+titleBouton+"']")));
+    }
+
+
+    // Nettoyage
+    public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
+        WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));
+        seleniumTools.clickOnElement(wait, boutonSupprimer);
+        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
+        seleniumTools.clickOnElement(wait, acceptSuppression);
+    }
+
+    public String uppercaseOnlyFirstLetter(String name){
+        name = name.toLowerCase();
+        String firstLetter = name.substring(0,1).toUpperCase();
+        return firstLetter + name.substring(1);
+
+    }
+
+    public void supressionJddAvecUtilisateur(WebDriverWait wait, Connection connection, String nom) throws Throwable {
+        ResultSet rs = outilsManipulationDonnee.select(connection,
+                "select login_name from user_table where login_name='"+uppercaseOnlyFirstLetter(nom)+"' or login_name='jdu';");
+
+        WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));
+        seleniumTools.clickOnElement(wait, boutonSupprimer);
+        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
+        seleniumTools.clickOnElement(wait, acceptSuppression);
+        boolean presenceUtilisateur = rs.next();
+        if (presenceUtilisateur){
+            WebElement acceptSuppressionUtilisateur = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                    "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Oui\")]")));
+            seleniumTools.clickOnElement(wait, acceptSuppressionUtilisateur);
+        }
+    }
+
+
+    public void verificationNettoyageTableau(WebDriverWait wait,
+                                             Connection connection, String query) throws Throwable {
+        LOGGER.info("Récupération valeurs du tableau");
+        List<String> listResultSet = outilsManipulationDonnee.resultQueryToString(connection, query);
+
+        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
+        for (String JDD : listResultSet){
+            LOGGER.info("Présence du JDD " + JDD);
+            supressionJdd(wait, JDD);
+            LOGGER.info("Suppression effectué");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                    "//div[@class='message_INFO']/span[contains(text(), '\"" + JDD + "\"')]")));
+        }
+    }
+
+
+    public void verificationNettoyageTableauParticipant(WebDriverWait wait,
+                                             Connection connection, String query) throws Throwable {
+        LOGGER.info("Récupération valeurs du tableau");
+        List<String> listResultSet = outilsManipulationDonnee.resultQueryToString(connection, query);
+
+        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
+        for (String JDD : listResultSet){
+            LOGGER.info("Présence du JDD " + JDD);
+            supressionJddAvecUtilisateur(wait, connection, JDD);
+            LOGGER.info("Suppression effectué");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                    "//div[@class='message_INFO']/span")));
+        }
     }
 }
 

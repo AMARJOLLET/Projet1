@@ -18,156 +18,123 @@ public class PageRessourcesCriteres extends AbstractFullPage {
         PageFactory.initElements(driver, this);
     }
 
+/*######################################################################################################################
+                                                  WEBELEMENT
+######################################################################################################################*/
     // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap"))).getText();
+    public WebElement titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap")));
     }
 
-    // Text Popup suppression
-    public List<String> listTextExtraitPopupSuppression(WebDriverWait wait) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class=\"z-window-modal-cl\"]//span[1]")));
-
-        // Creation des list
-        List<WebElement> listWe = driver.findElements(By.xpath("//div[@class=\"z-window-modal-cl\"]//span"));
-        List<String> listTextExtrait = new ArrayList<>();
-        for (WebElement we : listWe){
-            listTextExtrait.add(we.getText());
-        }
-
-        return listTextExtrait;
+    // Message Suppression
+    public WebElement messageSuppression(WebDriverWait wait, String nom) {
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
+                ("//div[@class='message_INFO']/span[contains(text(), '\"" + nom + "\" supprimé')]")));
     }
 
 
-    // WebElement bouton
-    public WebElement boutonSupprimer(WebDriverWait wait, String nom){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));
-    }
-
-    public WebElement boutonSupprimerOK(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-    }
-
-    public WebElement boutonSupprimerAnnuler(WebDriverWait wait){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Annuler\")]")));
-    }
-
+    // BOUTON
     public WebElement boutonCreer(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
                 "//table[@id = '" + idCommune + "_5-box']//td[text() = 'Créer']")));
     }
 
+
+    // TABLEAU
+    public List<WebElement> listLibelleTableau(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "//div[@class='clickable-rows z-grid']//tr[@class='z-columns']/th")));
+    }
+
+    public List<WebElement> listRowTableau(){
+        return driver.findElements(By.xpath(
+                "//div[@class='clickable-rows z-grid']//tbody[@class='z-rows']/tr"));
+    }
+
+    public WebElement boutonModifier(WebDriverWait wait, String nom){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Modifier']")));
+    }
+
+    public WebElement boutonSupprimer(WebDriverWait wait, String nom){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));
+    }
+
+
+    // POPUP SUPPRESSION
+    public WebElement textPopupSuppression(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class='z-window-modal-cl']//span[@class='z-label']")));
+    }
+
+    public WebElement boutonOKPopupSuppression(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class='z-window-modal-cl']//*[contains(text(), 'OK')]")));
+    }
+
+    public WebElement boutonAnnulerPopupSuppression(WebDriverWait wait){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+                "//div[@class='z-window-modal-cl']//*[contains(text(), 'Annuler')]")));
+    }
+
+
+
+
+/*######################################################################################################################
+                                                  METHODES
+######################################################################################################################*/
     // Bouton
     public PageRessourcesCriteresCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
-        WebElement we = boutonCreer(wait, idCommune);
-        for (int i = 0; i < 3; i++){
-            try {
-                seleniumTools.clickOnElement(wait, we);
-                LOGGER.info("Click bouton créer OK");
-                break;
-            } catch (ElementClickInterceptedException e){
-                LOGGER.info("Element intercepté -- retry");
-            }
-        }
+        outilsProjet.cliquerBoutonCreer(wait, boutonCreer(wait, idCommune));
         return new PageRessourcesCriteresCreer(driver);
     }
 
+
+    // TABLEAU
     public PageRessourcesCriteresCreer cliquerBoutonModifier(WebDriverWait wait, String nom) throws Throwable {
-        WebElement boutonModifier = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Modifier']"));
-        seleniumTools.clickOnElement(wait, boutonModifier);
+        seleniumTools.clickOnElement(wait, boutonModifier(wait, nom));
         return new PageRessourcesCriteresCreer(driver);
     }
 
-    public PageRessourcesCriteresCreer cliquerBoutonModifierNom(WebDriverWait wait, String nom) throws Throwable {
-        WebElement boutonModifier = driver.findElement(By.xpath("//span[text() = '" + nom + "']"));
-        seleniumTools.clickOnElement(wait, boutonModifier);
+    public PageRessourcesCriteresCreer cliquerNomTableau(WebDriverWait wait, String nom) throws Throwable {
+        Map<String, WebElement> mapValeurRow = recuperationValeurTableauCriteres(wait).get(nom);
+        seleniumTools.clickOnElement(wait, mapValeurRow.get("Nom"));
         return new PageRessourcesCriteresCreer(driver);
     }
 
     // Tableau
-    public List<String> recuperationEnTeteTableau(String idCommune){
-        List<WebElement> listEnTeteTableau = driver.findElements(By.xpath("//tr[@id='" + idCommune + "l4']/th/div"));
+    public List<String> recuperationListLibelleTableau(WebDriverWait wait){
         List<String> listValeurEnTeteTableau = new ArrayList<>();
-        for(int i = 0; i < listEnTeteTableau.size(); i++){
-            listValeurEnTeteTableau.add(listEnTeteTableau.get(i).getText());
+        for(WebElement libelle : listLibelleTableau(wait)){
+            listValeurEnTeteTableau.add(libelle.getText());
         }
         listValeurEnTeteTableau.add("Opérations2");
         return listValeurEnTeteTableau;
     }
 
 
-    public Map<String, Map<String, String>> recuperationValeurTableauCriteres(String idCommune) {
-        // List WebElement
-        List<String> listValeurEnTeteTableau = recuperationEnTeteTableau(idCommune);
-        List<WebElement> listCritere = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "r4']/tr"));
+    public Map<String, Map<String, WebElement>> recuperationValeurTableauCriteres(WebDriverWait wait) {
+        Map<String, Map<String, WebElement>> mapTableauAvancement = new HashMap<>();
+        LOGGER.info("Récupération de " + listLibelleTableau(wait).size() + " rows");
+        for(WebElement row : listRowTableau()){
+            Map<String, WebElement> mapRowTableau = new HashMap<>();
 
-        // Map Contenant la map
-        Map<String, Map<String, String>> listMapCritereTableau = new HashMap<>();
+            for(int i = 0; i < listLibelleTableau(wait).size(); i++){
+                List<WebElement> listValeurTableau = row.findElements(By.xpath("./td"));
+                String nomLibelle = listLibelleTableau(wait).get(i).getText();
+                WebElement rowValeur;
 
-        LOGGER.info("Début de la récupération - " + listCritere.size() + " critères detectés ");
-        for (WebElement we : listCritere) {
-            Map<String, String> listValeurCriteres = new HashMap<>();
-            List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[not(@title='Supprimer')]"));
-            for (int j = 0; j < listCritereValeur.size(); j++) {
-                // Prise en compte de la checkbox Activité
-                if (Objects.equals(listValeurEnTeteTableau.get(j), "Activé")) {
-                    WebElement activiteState = we.findElement(By.xpath(".//input[@type='checkbox']"));
-                    listValeurCriteres.put(listValeurEnTeteTableau.get(j),  activiteState.getAttribute("checked"));
-                    LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + activiteState.getAttribute("checked"));
+                if(Objects.equals(nomLibelle, "Activé")){
+                    rowValeur = listValeurTableau.get(i).findElement(By.xpath(".//input"));
+                } else {
+                    rowValeur = listValeurTableau.get(i).findElement(By.xpath(".//span"));
                 }
-                // Récupération du texte dans les autres cas
-                else {
-                    listValeurCriteres.put(listValeurEnTeteTableau.get(j), listCritereValeur.get(j).getText());
-                    LOGGER.info("Ajout de " + listValeurEnTeteTableau.get(j) + " = " + listCritereValeur.get(j).getText());
-                }
+                mapRowTableau.put(nomLibelle, rowValeur);
             }
-            LOGGER.info("Récupération terminé");
-            listMapCritereTableau.put(listValeurCriteres.get("Nom"),listValeurCriteres);
+            mapTableauAvancement.put(mapRowTableau.get("Nom").getText(), mapRowTableau);
         }
-        return listMapCritereTableau;
-    }
-
-    // Nettoyage
-    public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']")));
-        seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppression);
-    }
-
-    public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
-                                             String nomAnnuler, String nomEnregistrer, String nomContinuer, String nomModifier) throws Throwable {
-        LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurParCritere = recuperationValeurTableauCriteres(idCommune);
-        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
-        LOGGER.info(listValeurParCritere.size() + " rows detectées");
-        if(listValeurParCritere.containsKey(nomAnnuler)){
-            LOGGER.info("Présence du JDD " + nomAnnuler);
-            supressionJdd(wait, nomAnnuler);
-            LOGGER.info("Suppression effectué");
-        }
-        if (listValeurParCritere.containsKey(nomEnregistrer)){
-            Thread.sleep(500);
-            LOGGER.info("Présence du JDD " + nomEnregistrer);
-            supressionJdd(wait, nomEnregistrer);
-            LOGGER.info("Suppression effectué");
-        }
-        if (listValeurParCritere.containsKey(nomContinuer)){
-            Thread.sleep(500);
-            LOGGER.info("Présence du JDD " + nomContinuer);
-            supressionJdd(wait, nomContinuer);
-            LOGGER.info("Suppression effectué");
-        }
-        if (listValeurParCritere.containsKey(nomModifier)){
-            Thread.sleep(500);
-            LOGGER.info("Présence du JDD " + nomModifier);
-            supressionJdd(wait, nomModifier);
-            LOGGER.info("Suppression effectué");
-        }
+        return mapTableauAvancement;
     }
 
 }

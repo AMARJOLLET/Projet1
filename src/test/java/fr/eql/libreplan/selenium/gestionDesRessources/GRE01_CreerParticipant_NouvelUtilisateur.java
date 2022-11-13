@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyageParticipant = "select surname from worker where surname='??';";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -78,8 +81,11 @@ public class GRE01_CreerParticipant_NouvelUtilisateur extends AbstractTestSeleni
                 "Le bouton créer n'est pas celui attendu");
 
         LOGGER.info("PRE REQUIS DU TEST");
-        LOGGER.info("Vérification que le JDD n'est pas présent");
-        pageRessourcesParticipants.verificationNettoyageTableauAvecUtilisateur(wait, idCommune, nomParticipant);
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyageParticipant = outilsManipulationDonnee.formatageQuery(queryNettoyageParticipant, nomParticipant);
+        LOGGER.info("Query setup " + queryNettoyageParticipant);
+        outilsProjet.verificationNettoyageTableauParticipant(wait, connection, queryNettoyageParticipant);
+        LOGGER.info("Reprise du cas de test");
         pageRessourcesParticipants.ajoutParticipant(wait, idCommune);
 
         LOGGER.info("Pas de test 3 -- Créer un participant - Accès au formulaire de création");

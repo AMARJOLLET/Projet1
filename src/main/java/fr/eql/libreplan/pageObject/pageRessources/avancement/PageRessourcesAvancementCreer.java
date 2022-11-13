@@ -1,7 +1,6 @@
 package fr.eql.libreplan.pageObject.pageRessources.avancement;
 
 import fr.eql.libreplan.pageObject.AbstractFullPage;
-import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrier;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,24 +8,34 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
 public class PageRessourcesAvancementCreer extends AbstractFullPage {
     public PageRessourcesAvancementCreer(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
     }
 
+
+/*######################################################################################################################
+                                                    WEBELEMENTS
+######################################################################################################################*/
     // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t4-cnt"))).getText();
+    public WebElement titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "t4-cnt")));
     }
 
-    public String titreFormulaire(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "w4-hm"))).getText();
+    public WebElement titreFormulaire(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "w4-hm")));
     }
 
-    public String messageCreation(WebDriverWait wait, String nom) {
+    public WebElement messageCreation(WebDriverWait wait, String nom) {
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//div[@class='message_INFO']/span[contains(text(), '" + nom + "')]"))).getText();
+                ("//div[@class='message_INFO']/span[contains(text(), '" + nom + "')]")));
     }
 
     // WebElement Bouton
@@ -34,7 +43,7 @@ public class PageRessourcesAvancementCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "l5-box")));
     }
 
-    public WebElement boutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune){
+    public WebElement boutonSauverEtContinuer(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "m5-box")));
     }
 
@@ -42,6 +51,21 @@ public class PageRessourcesAvancementCreer extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "n5-box")));
     }
 
+    // Formulaire
+    public List<WebElement> listRowFormulaire(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "//div[@class='z-tabbox']//tbody[@class='z-rows']/tr")));
+    }
+
+    public boolean inputValeurMaxDisabled(WebDriverWait wait){
+        Function<WebDriver, Boolean> inputValeurMaxDisabled = driver -> !driver.findElement(By.xpath(
+                "//span[text()='Valeur maximum par défaut']/ancestor::tr//input")).isEnabled();
+        return wait.until(inputValeurMaxDisabled);
+    }
+
+/*######################################################################################################################
+                                                    METHODES
+######################################################################################################################*/
     // Methode clique sur Bouton
     public PageRessourcesAvancement cliquerBoutonAnnuler(WebDriverWait wait, String idCommune) throws Throwable {
         seleniumTools.clickOnElement(wait, boutonAnnuler(wait, idCommune));
@@ -53,63 +77,45 @@ public class PageRessourcesAvancementCreer extends AbstractFullPage {
         return new PageRessourcesAvancement(driver);
     }
 
-    public void cliquerBoutonEnregistrerEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, boutonEnregistrerEtContinuer(wait, idCommune));
+    public void cliquerBoutonSauverEtContinuer(WebDriverWait wait, String idCommune) throws Throwable {
+        seleniumTools.clickOnElement(wait, boutonSauverEtContinuer(wait, idCommune));
     }
 
     // Formulaire
-    public String libelleNomUnite(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "45"))).getText();
-    }
-    public String libelleActif(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "75"))).getText();
-    }
-    public String libelleValeurMax(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "a5"))).getText();
-    }
-    public String libellePrecision(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "d5"))).getText();
-    }
-    public String libelleType(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "g5"))).getText();
-    }
-    public String libellePourcentage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j5"))).getText();
-    }
-
-    public WebElement inputNomUnite(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "55")));
-    }
-    public WebElement checkboxActif(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "85-real")));
-    }
-    public WebElement inputValeurMax(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idCommune + "b5")));
-    }
-    public WebElement inputPrecision(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "e5")));
-    }
-    public WebElement inputType(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "h5")));
-    }
-    public WebElement checkboxPourcentage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "k5-real")));
+        // MAP TABLEAU
+    public Map<String, WebElement> recuperationFormulaireCreationAvancement(WebDriverWait wait){
+        Map<String, WebElement> mapTableauCreationAvancement = new HashMap<>();
+        LOGGER.info("Récupération de " + listRowFormulaire(wait).size() + " rows");
+        for(WebElement rowWe : listRowFormulaire(wait)){
+            WebElement libelle = rowWe.findElement(By.xpath("./td[1]//span"));
+            WebElement valeur;
+            // PRISE EN COMPTE DU CAS TYPE (double SPAN)
+            if(Objects.equals(libelle.getText(), "Type")){
+                valeur = rowWe.findElement(By.xpath("./td[2]//span"));
+            } else {
+                valeur = rowWe.findElement(By.xpath("./td[2]//input"));
+            }
+            mapTableauCreationAvancement.put(libelle.getText(), valeur);
+        }
+        LOGGER.info("Récupération réussi avec " + mapTableauCreationAvancement.size() + " rows");
+        return mapTableauCreationAvancement;
     }
 
 
-    // Formulaire
+        // REMPLIR
     public void remplirFormulaire(WebDriverWait wait, String idCommune,
                                   String nomUnite, boolean actif, String valeurMax, String precision, boolean pourcentage) throws Throwable {
+        Map<String, WebElement> mapTableau = recuperationFormulaireCreationAvancement(wait);
         LOGGER.info("Renseigne le champ nom unite : " + nomUnite);
-        seleniumTools.sendKey(wait, inputNomUnite(wait, idCommune), nomUnite);
+        seleniumTools.sendKey(wait, mapTableau.get("Nom d'unité"), nomUnite);
         LOGGER.info("Vérification que la checkbox Actif est coché : " + actif);
-        seleniumTools.checkBoxCheck(wait, checkboxActif(wait, idCommune), actif);
+        seleniumTools.checkBoxCheck(wait, mapTableau.get("Actif"), actif);
         LOGGER.info("Renseigne le champ valeurMax: " + valeurMax);
-        seleniumTools.sendKey(wait, inputValeurMax(wait, idCommune), valeurMax);
+        seleniumTools.sendKey(wait, mapTableau.get("Valeur maximum par défaut"), valeurMax);
         LOGGER.info("Renseigne le champ precision : " + precision);
-        seleniumTools.sendKey(wait, inputPrecision(wait, idCommune), precision);
+        seleniumTools.sendKey(wait, mapTableau.get("Précision"), precision);
         LOGGER.info("Vérification que la checkbox pourcentage est coché : " + pourcentage);
-        seleniumTools.checkBoxCheck(wait, checkboxPourcentage(wait, idCommune), pourcentage);
+        seleniumTools.checkBoxCheck(wait, mapTableau.get("Pourcentage"), pourcentage);
     }
 
 }

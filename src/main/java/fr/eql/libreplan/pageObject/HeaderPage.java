@@ -192,7 +192,8 @@ public class HeaderPage extends AbstractFullPage {
         LOGGER.info("Mouseover sur le bouton ressources");
         seleniumTools.mouseOver(wait, coutBouton(wait,idCommune));
         LOGGER.info("Mouseover sur le bouton Machines");
-        seleniumTools.mouseOver(wait, coutFeuilleDeTempsBouton(wait,idCommune));
+        // Problème avec Firefox
+        //seleniumTools.mouseOver(wait, coutFeuilleDeTempsBouton(wait,idCommune));
         LOGGER.info("Click sur le bouton Machines");
         seleniumTools.clickOnElement(wait, coutFeuilleDeTempsBouton(wait,idCommune));
         return new PageCoutFeuilleDeTemps(driver);

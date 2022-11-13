@@ -20,20 +20,26 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
         super(driver);
         PageFactory.initElements(driver, this);
     }
+
+
     // Acces à la page Calendrier
     public PageRessourcesCalendrier cliquerRessourcesCalendrier(WebDriverWait wait, String idCommune) throws Throwable {
         return getHeader().cliquerRessourcesCalendrier(wait, idCommune);
     }
 
+
+/*######################################################################################################################
+                                                  WEBELEMENT
+######################################################################################################################*/
     // Titre
-    public String titreDeLaPage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap"))).getText();
+    public WebElement titreDeLaPage(WebDriverWait wait, String idCommune){
+        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "j4-cap")));
     }
 
     // Message d'enregistrement
-    public String messageCreation(WebDriverWait wait, String nom){
+    public WebElement messageCreation(WebDriverWait wait, String nom){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath
-                ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]"))).getText();
+                ("//div[@class='message_INFO']/span[contains(text(), '"+ nom +"')]")));
     }
 
     // WebElement Bouton
@@ -41,75 +47,42 @@ public class PageRessourcesJoursExceptionnels extends AbstractFullPage {
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//table[@id = '" + idCommune + "t4-box']//td[text() = 'Créer']")));
     }
 
-    // Clique Bouton
-    public PageRessourcesJoursExceptionnelsCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
-        WebElement we = boutonCreer(wait, idCommune);
-        for (int i = 0; i < 3; i++){
-            try {
-                seleniumTools.clickOnElement(wait, we);
-                LOGGER.info("Click bouton créer OK");
-                break;
-            } catch (ElementClickInterceptedException e){
-                LOGGER.info("Element intercepté -- retry");
-            }
-        }
-        return new PageRessourcesJoursExceptionnelsCreer(driver);
+    // Tableau
+    public List<WebElement> listLibelleTableau(WebDriverWait wait){
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
+                "//div[@class='clickable-rows z-grid']//tr[@class='z-columns']/th")));
+    }
+
+    public List<WebElement> listRowTableau(){
+        return driver.findElements(By.xpath(
+                "//div[@class='clickable-rows z-grid']//tbody[@class='z-rows']/tr"));
     }
 
 
 
 
+/*######################################################################################################################
+                                                  METHODES
+######################################################################################################################*/
+
+    // Clique Bouton
+    public PageRessourcesJoursExceptionnelsCreer cliquerBoutonCreer(WebDriverWait wait, String idCommune) throws Throwable {
+        outilsProjet.cliquerBoutonCreer(wait, boutonCreer(wait, idCommune));
+        return new PageRessourcesJoursExceptionnelsCreer(driver);
+    }
+
+
     // Tableau
-    public List<String> recuperationLibelleTableau(String idCommune){
+    public List<String> recuperationLibelleTableau(WebDriverWait wait){
         List<String> listLibelleTableauString = new ArrayList<>();
-        List<WebElement> listLibelleTableau = driver.findElements(By.xpath("//tr[@id = '" + idCommune + "m4']/th"));
-        for (WebElement we : listLibelleTableau) {
+        for (WebElement we : listLibelleTableau(wait)) {
             listLibelleTableauString.add(we.getText());
         }
         return listLibelleTableauString;
     }
 
     // Tableau
-    public Map<String, Map<String, String>> recuperationValeurTableauJourExceptionnel(String idCommune) {
-        // List WebElement
-        List<String> listValeurEnTeteTableau = recuperationLibelleTableau(idCommune);
-        List<WebElement> listTableau = driver.findElements(By.xpath("//tbody[@id='" + idCommune + "_6']/tr"));
-
-        // Map Contenant la map
-        Map<String, Map<String, String>> listMapCalendrierTableau = new HashMap<>();
-
-        LOGGER.info("Début de la récupération - " + listTableau.size() + " calendriers detectés ");
-        for (WebElement we : listTableau) {
-            Map<String, String> listValeurCalendrier = new HashMap<>();
-            List<WebElement> listCritereValeur = we.findElements(By.xpath(".//span[not(@title='Supprimer')]"));
-            for (int j = 0; j < listCritereValeur.size(); j++) {
-                listValeurCalendrier.put(listValeurEnTeteTableau.get(j), listCritereValeur.get(j).getText());
-            }
-            listMapCalendrierTableau.put(listValeurCalendrier.get("Nom"),listValeurCalendrier);
-        }
-        LOGGER.info("Récupération terminé");
-        return listMapCalendrierTableau;
+    public Map<String, Map<String, WebElement>> recuperationValeurTableauJourExceptionnel(WebDriverWait wait) {
+        return outilsProjet.recuperationValeurTableauText("Nom", listLibelleTableau(wait), listRowTableau());
     }
-
-
-    // Nettoyage
-    public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']"));
-        seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppression);
-    }
-
-    public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
-                                                 String nom) throws Throwable {
-        LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurTableauCalendrier = recuperationValeurTableauJourExceptionnel(idCommune);
-        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
-        if(listValeurTableauCalendrier.containsKey(nom)){
-            LOGGER.info("Présence du JDD " + nom);
-            supressionJdd(wait, nom);
-            LOGGER.info("Suppression effectué");
-        }
-    }
-
 }

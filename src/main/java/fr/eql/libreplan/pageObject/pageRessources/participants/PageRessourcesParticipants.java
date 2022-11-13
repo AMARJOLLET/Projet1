@@ -196,48 +196,6 @@ public class PageRessourcesParticipants extends AbstractFullPage {
         seleniumTools.clickOnElement(wait, boutonFiltre(wait, idCommune));
     }
 
-
-    // Nettoyage
-    public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']"));
-        seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppression);
-    }
-
-    public void supressionJddAvecUtilisateur(WebDriverWait wait,String idCommune, String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr[1]//span[@title='Supprimer']"));
-        seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppression);
-        WebElement acceptSuppressionUtilisateur = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"Oui\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppressionUtilisateur);
-    }
-
-    public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
-                                             String nom) throws Throwable {
-        LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(wait, idCommune);
-        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
-        if(listValeurTableauParticipant.containsKey(nom)){
-            LOGGER.info("Présence du JDD " + nom);
-            supressionJdd(wait, nom);
-            LOGGER.info("Suppression effectué");
-        }
-    }
-
-    public void verificationNettoyageTableauAvecUtilisateur(WebDriverWait wait, String idCommune,
-                                             String nom) throws Throwable {
-        LOGGER.info("Récupération valeurs du tableau en vu de suppression");
-        Map<String, Map<String, String>> listValeurTableauParticipant = recuperationValeurTableauParticipant(wait, idCommune);
-        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
-        if(listValeurTableauParticipant.containsKey(nom)){
-            LOGGER.info("Présence du JDD " + nom);
-            supressionJddAvecUtilisateur(wait, idCommune, nom);
-            LOGGER.info("Suppression effectué");
-        }
-    }
-
     // PRE REQUIS DU TEST GRE01
     public void ajoutParticipant(WebDriverWait wait, String idCommune) throws Throwable {
         wait.until(ExpectedConditions.elementToBeClickable(boutonCreer(wait, idCommune)));

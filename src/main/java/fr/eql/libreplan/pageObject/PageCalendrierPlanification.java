@@ -11,6 +11,7 @@ import fr.eql.libreplan.pageObject.pageRessources.machines.PageRessourcesMachine
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipants;
 import fr.eql.libreplan.pageObject.pageRessources.criteres.PageRessourcesCriteres;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -119,7 +120,15 @@ public class PageCalendrierPlanification extends AbstractFullPage{
 
     // CREATION PROJET
     public void cliquerCreerUnProjet(WebDriverWait wait, String idCommune) throws Throwable {
-        seleniumTools.clickOnElement(wait, creerUnProjet(wait, idCommune));
+        // Boucle firefox
+        for (int i = 0; i < 3; i++){
+            try {
+                seleniumTools.clickOnElement(wait, creerUnProjet(wait, idCommune));
+                break;
+            } catch (ElementClickInterceptedException e){
+                LOGGER.info("retry");
+            }
+        }
     }
 
     public PageDetailProjet cliquerAccepterBouton(WebDriverWait wait) throws Throwable {

@@ -21,9 +21,15 @@ public class PageCoutFeuilleDeTempsCreer extends AbstractFullPage {
 /*######################################################################################################################
                                                     WEBELEMENT
 ######################################################################################################################*/
+//    public WebElement titrePage(WebDriverWait wait, String idCommune){
+//        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(idCommune + "17-cap")));
+//    }
+
     public WebElement titrePage(WebDriverWait wait, String idCommune){
-        return wait.until(ExpectedConditions.elementToBeClickable(By.id(idCommune + "19-cap")));
+        return wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='Créer la feuille de temps']")));
     }
+
+
 
     public List<WebElement> listBloc(WebDriverWait wait){
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(
@@ -31,6 +37,11 @@ public class PageCoutFeuilleDeTempsCreer extends AbstractFullPage {
     }
 
     // Donnee General
+    public List<WebElement> listRowDonneeGeneral(WebDriverWait wait){
+        return listBloc(wait).get(0).findElements(By.xpath(".//tbody[@class=\"z-rows\"]/tr"));
+    }
+
+
     public WebElement libelleType(WebDriverWait wait, String idCommune){
         return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(idCommune + "g9")));
     }
@@ -111,6 +122,28 @@ public class PageCoutFeuilleDeTempsCreer extends AbstractFullPage {
         }
         return listLibelleString;
     }
+
+    // TABLEAU GENERAL
+    public Map<String, WebElement> recuperationTableauDonneeGeneral(WebDriverWait wait){
+        Map<String, WebElement> mapTableau = new HashMap<>();
+        List<WebElement> listRow = listRowDonneeGeneral(wait);
+        for(WebElement row : listRow){
+            WebElement libelle = row.findElement(By.xpath("./td[1]"));
+            WebElement input;
+            if(Objects.equals(libelle.getText(), "Type")){
+                input = row.findElement(By.xpath("./td[2]//span"));
+            } else {
+                input= row.findElement(By.xpath("./td[2]//input[@type=\"text\"]"));
+            }
+            mapTableau.put(libelle.getText(), input);
+        }
+        WebElement genereCodeLibelle = listBloc(wait).get(0).findElement(By.xpath(".//span[@class=\"z-checkbox\"]/label"));
+        WebElement genereCodeCheckbox = listBloc(wait).get(0).findElement(By.xpath(".//span[@class=\"z-checkbox\"]/input"));
+        mapTableau.put(genereCodeLibelle.getText(), genereCodeCheckbox);
+
+        return mapTableau;
+    }
+
 
     // FORMULAIRE
     public void cliquerBoutonAjouterUneLigne(WebDriverWait wait, String idCommune) throws Throwable {

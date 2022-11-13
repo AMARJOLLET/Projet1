@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyageParticipant = "select surname from worker where surname='??';";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -90,8 +93,12 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
                 "Le bouton créer n'est pas celui attendu");
 
         LOGGER.info("PRE REQUIS DU TEST");
-        LOGGER.info("Vérification que le JDD n'est pas présent");
-        pageRessourcesParticipants.verificationNettoyageTableauAvecUtilisateur(wait, idCommune, nomParticipant);
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyageParticipant = outilsManipulationDonnee.formatageQuery(queryNettoyageParticipant, nomParticipant);
+        LOGGER.info("Query setup " + queryNettoyageParticipant);
+        outilsProjet.verificationNettoyageTableauParticipant(wait, connection, queryNettoyageParticipant);
+        LOGGER.info("Reprise du cas de test");
+
         LOGGER.info("Vérification que le JDD pré-requis présent");
         Thread.sleep(500);
         Map<String, Map<String, String>> mapValeurTableau = pageRessourcesParticipants.recuperationValeurTableauParticipant(wait, idCommune);
@@ -173,7 +180,7 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
 
         LOGGER.info("Pas de test 6 -- Actions sur le message d'erreur - déplacement");
         LOGGER.info("Déplacement de la fenêtre sur le libellé nom");
-        Thread.sleep(500);
+        Thread.sleep(1000);
         pageRessourcesParticipantsCreer.changementOrientationFleche(wait, idCommune);
         LOGGER.info("Vérification de la flèche");
         assertion.verifyEquals("z-arrow-u", pageRessourcesParticipantsCreer.orientationFlecheMessageErreur(wait),
@@ -214,6 +221,7 @@ public class GRE03_CreerParticipantNouvelUtilisateur_CNP extends AbstractTestSel
         LOGGER.info("Enregistrement");
         pageRessourcesParticipantsCreer.cliquerBoutonEnregistrer(wait, idCommune);
         LOGGER.info("Vérification du message d'erreur");
+        Thread.sleep(500);
         assertion.verifyEquals("ne peut pas être vide", pageRessourcesParticipantsCreer.messageAlerteDonneeObligatoire(wait).getText(),
                 "Le message d'erreur n'est pas celui attendu");
 

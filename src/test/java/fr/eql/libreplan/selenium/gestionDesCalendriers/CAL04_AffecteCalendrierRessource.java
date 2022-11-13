@@ -6,12 +6,19 @@ import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesPar
 import fr.eql.libreplan.pageObject.pageRessources.participants.PageRessourcesParticipantsCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyage = "select name from base_calendar where name='??';";
+    protected String queryNettoyageParticipant = "select surname from worker where surname='??';";
+
+
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -44,22 +51,33 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Nettoyage si necessaire");
         PageRessourcesParticipants pageRessourcesParticipants = pageCalendrierPlanification.cliquerRessourcesParticipants(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
-        LOGGER.info("Nettoyage Participant");
-        pageRessourcesParticipants.verificationNettoyageTableau(wait, idCommune, nomParticipant);
+
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyageParticipant = outilsManipulationDonnee.formatageQuery(queryNettoyageParticipant, nomParticipant);
+        LOGGER.info("Query setup " + queryNettoyageParticipant);
+        outilsProjet.verificationNettoyageTableauParticipant(wait, connection, queryNettoyageParticipant);
+        LOGGER.info("Reprise du cas de test");
+
+
         PageRessourcesCalendrier pageRessourcesCalendrier = pageRessourcesParticipants.cliquerRessourcesCalendrier(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Nettoyage Calendrier");
-        assertion.verifyEquals("Liste de calendriers",pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Liste de calendriers",pageRessourcesCalendrier.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        pageRessourcesCalendrier.verificationNettoyageTableauCAL2(wait, idCommune, nomCalendrier);
+
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyage = outilsManipulationDonnee.formatageQuery(queryNettoyage, nomCalendrier);
+        LOGGER.info("Query setup " + queryNettoyage);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyage);
+        LOGGER.info("Reprise du cas de test");
 
         LOGGER.info("Création du calendrier");
         methodesProjet.creationCalendrier(wait, idCommune, nomCalendrier, codeCalendrier);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        Map<String, Map<String, String>> mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait, idCommune);
+        Map<String, Map<String, WebElement>> mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait);
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrier),
                 nomCalendrier + " n'est pas retrouvé dans le tableau des calendriers");
 
@@ -98,8 +116,6 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
 
 
         LOGGER.info("Pas de test 3 -- Accéder au formulaire de modification d'un participant");
-        LOGGER.info("Nettoyage si nécessaire");
-        pageRessourcesParticipants.verificationNettoyageTableau(wait, idCommune, nomParticipant);
         LOGGER.info("Creation d'un participant");
         PageRessourcesParticipantsCreer pageRessourcesParticipantsCreer = pageRessourcesParticipants.cliquerBoutonCreer(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
@@ -168,7 +184,8 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         LOGGER.info("Pas de test 5 -- Supprimer le calendrier affecté par défaut (1/2)");
         pageRessourcesParticipantsCreer.cliquerSupprimerCalendrier(wait, idCommune);
         LOGGER.info("Vérification du champ calendrier Parent");
-        assertion.verifyEquals("Choisir un calendrier parent", pageRessourcesParticipantsCreer.libelleChoisirCalendrierParent(wait, idCommune).getText(),
+        assertion.verifyEquals("Choisir un calendrier parent",
+                pageRessourcesParticipantsCreer.libelleChoisirCalendrierParent(wait, idCommune).getText(),
                 "Le champ calendrier Parent ne possède pas le bon libellé");
         assertion.verifyEquals("Default", pageRessourcesParticipantsCreer.inputCalendrierParent(wait, idCommune).getAttribute("value"),
                 "Le champ calendrier Parent ne possède pas la bonne valeur par défaut");
@@ -177,7 +194,7 @@ public class CAL04_AffecteCalendrierRessource extends AbstractTestSelenium {
         for (String str : listCalendrierParent) {
             LOGGER.info(str);
         }
-        for (Map.Entry<String, Map<String, String>> mapCalendrier : mapValeurTableauCalendrier.entrySet()){
+        for (Map.Entry<String, Map<String, WebElement>> mapCalendrier : mapValeurTableauCalendrier.entrySet()){
             LOGGER.info("Vérification de " + mapCalendrier.getKey() + " dans la liste des calendriers parents");
             assertion.verifyTrue(listCalendrierParent.contains(mapCalendrier.getKey()),
                     "La liste des calendriers parents ne possède pas le calendrier " + mapCalendrier.getKey());

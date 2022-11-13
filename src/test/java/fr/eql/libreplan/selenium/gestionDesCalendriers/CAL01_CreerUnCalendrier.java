@@ -5,12 +5,17 @@ import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalen
 import fr.eql.libreplan.pageObject.pageRessources.calendrier.PageRessourcesCalendrierCreer;
 import fr.eql.libreplan.selenium.AbstractTestSelenium;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyage = "select name from base_calendar where name in ('??','??','??') order by \"name\" DESC ;";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -49,14 +54,19 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
 
         LOGGER.info("Pas de test 3 -- Créer un calendrier - Accès au formulaire de création");
         idCommune = outilsProjet.retournerIdCommune(wait);
-        pageRessourcesCalendrier.verificationNettoyageTableauCAL1(wait, idCommune,
-                nomCalendrierDerive,nomCalendrier,nomCalendrierCopier);
+
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyage = outilsManipulationDonnee.formatageQuery(queryNettoyage, nomCalendrierDerive,nomCalendrier,nomCalendrierCopier);
+        LOGGER.info("Query setup " + queryNettoyage);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyage);
+        LOGGER.info("Reprise du cas de test");
+
         PageRessourcesCalendrierCreer pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCreer(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page et du formulaire");
-        assertion.verifyEquals("Créer Calendrier", pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Créer Calendrier", pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        assertion.verifyEquals("Données de calendrier", pageRessourcesCalendrierCreer.titreFormulaire(wait, idCommune),
+        assertion.verifyEquals("Données de calendrier", pageRessourcesCalendrierCreer.titreFormulaire(wait, idCommune).getText(),
                 "Le titre du formulaire n'est pas celui attendu");
         LOGGER.info("Vérification du texte des 3 boutons");
         assertion.verifyEquals("Enregistrer", pageRessourcesCalendrierCreer.boutonEnregistrer(wait, idCommune).getText(),
@@ -75,10 +85,10 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         pageRessourcesCalendrier = pageRessourcesCalendrierCreer.cliquerBoutonEnregistrer(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page et du formulaire");
-        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Recupération des valeurs du tableau");
-        Map<String, Map<String, String>> mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait, idCommune);
+        Map<String, Map<String, WebElement>> mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait);
         LOGGER.info("Vérification");
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrier),
                 "Le tableau ne contient pas " + nomCalendrier);
@@ -87,7 +97,7 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCreerUneDerive(wait, nomCalendrier);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Créer Calendrier", pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Créer Calendrier", pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         assertion.verifyEquals("Dérivé du calendrier " + nomCalendrier, pageRessourcesCalendrierCreer.inputType(wait, idCommune).getText(),
                 "Le Type dans le formulaire n'est pas celui attendu");
@@ -97,14 +107,14 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         pageRessourcesCalendrierCreer.remplirFormulaire(wait, idCommune, nomCalendrier, codeCalendrier);
         LOGGER.info("Formulaire rempli");
         pageRessourcesCalendrierCreer.cliquerBoutonEnregistrer(wait, idCommune);
-        Thread.sleep(1000);
-        LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Créer Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
-                "Le titre de la page n'est pas celui attendu");
         LOGGER.info("Vérification du message d'erreur");
         assertion.verifyEquals(nomCalendrier + " existe déjà", pageRessourcesCalendrierCreer.messageAlerte(wait).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        if(navigateur == "Chrome"){
+        LOGGER.info("Vérification du titre de la page");
+        assertion.verifyEquals("Créer Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
+                "Le titre de la page n'est pas celui attendu");
+
+        if(Objects.equals(navigateur, "chrome")){
             assertion.verifyEquals("rgba(253, 202, 135, 1)", pageRessourcesCalendrierCreer.messageAlerteColor(wait),
                     "La couleur du message d'erreur n'est pas celui attendu");
         }
@@ -114,19 +124,20 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         pageRessourcesCalendrierCreer.remplirFormulaire(wait, idCommune, nomCalendrierDerive, codeCalendrierDerive);
         pageRessourcesCalendrierCreer.cliquerBoutonEnregistrerEtContinuer(wait, idCommune);
         LOGGER.info("Vérification du message de création");
-        assertion.verifyEquals("Calendrier de base \"" + nomCalendrierDerive + "\" enregistré", pageRessourcesCalendrierCreer.messageCreation(wait, nomCalendrierDerive),
+        assertion.verifyEquals("Calendrier de base \"" + nomCalendrierDerive + "\" enregistré",
+                pageRessourcesCalendrierCreer.messageCreation(wait, nomCalendrierDerive).getText(),
                 "Le message de création n'est pas celui attendu");
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Créer Calendrier: " + nomCalendrierDerive, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Créer Calendrier: " + nomCalendrierDerive, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
 
         LOGGER.info("Pas de test 8 -- Retour page de gestion des calendriers");
         pageRessourcesCalendrier = pageRessourcesCalendrierCreer.cliquerBoutonAnnuler(wait, idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait, idCommune);
+        mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait);
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrierDerive),
                 "Le tableau ne contient pas " + nomCalendrierDerive);
 
@@ -140,7 +151,7 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         pageRessourcesCalendrierCreer = pageRessourcesCalendrier.cliquerBoutonCopierCalendrier(wait, nomCalendrier);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Créer Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Créer Calendrier: " + nomCalendrier, pageRessourcesCalendrierCreer.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
         assertion.verifyEquals(nomCalendrier, pageRessourcesCalendrierCreer.inputNom(wait, idCommune).getAttribute("value"),
                 "Le nom du calendrier du formulaire n'est pas celui attendu");
@@ -160,12 +171,13 @@ public class CAL01_CreerUnCalendrier extends AbstractTestSelenium {
         LOGGER.info("Enregistrement effectué");
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page");
-        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune),
+        assertion.verifyEquals("Liste de calendriers", pageRessourcesCalendrier.titreDeLaPage(wait, idCommune).getText(),
                 "Le titre de la page n'est pas celui attendu");
-        assertion.verifyEquals("Calendrier de base \"" + nomCalendrierCopier + "\" enregistré", pageRessourcesCalendrier.messageCreation(wait, nomCalendrierCopier),
+        assertion.verifyEquals("Calendrier de base \"" + nomCalendrierCopier + "\" enregistré",
+                pageRessourcesCalendrier.messageCreation(wait, nomCalendrierCopier).getText(),
                 "Le message d'enregistrement n'est pas celui attendu");
         LOGGER.info("Récupération du tableau des calendriers");
-        mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait, idCommune);
+        mapValeurTableauCalendrier = pageRessourcesCalendrier.recuperationValeurTableauCalendrier(wait);
         LOGGER.info("Vérification de la copie du calendrier dans le tableau");
         assertion.verifyTrue(mapValeurTableauCalendrier.containsKey(nomCalendrierCopier));
 

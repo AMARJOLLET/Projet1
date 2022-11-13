@@ -1,7 +1,5 @@
 package fr.eql.libreplan.selenium;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -9,16 +7,20 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.LoggerFactory;
 import utils.*;
 
-import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.Duration;
 
 public abstract class AbstractTestSelenium extends Logging {
     protected String className = getClass().getSimpleName();
     protected String classPackage = getClass().getPackage().getName();
     protected String classPackageLogs = getClass().getName();
+
+    // URL MACHINE HOST
+    protected String urlMachineHost = "192.168.15.10";
 
     // Driver
     protected WebDriver driver;
@@ -27,7 +29,8 @@ public abstract class AbstractTestSelenium extends Logging {
     protected int explicitWaitingTime = 10;
 
     // instantiation
-    protected OutilsProjet outilsProjet = new OutilsProjet();
+    protected OutilsManipulationDonnee outilsManipulationDonnee = new OutilsManipulationDonnee();
+    protected OutilsProjet outilsProjet = new OutilsProjet(driver);
     protected InstanciationDriver instanciationDriver;
     protected SeleniumTools seleniumTools;
     protected Assertion assertion;
@@ -35,13 +38,24 @@ public abstract class AbstractTestSelenium extends Logging {
     protected MethodesProjet methodesProjet;
 
     // Variable
-    protected String navigateur = "chrome";
-    protected String url = "http://192.168.15.10:8090/libreplan";
+    protected String navigateur = "firefox";
+    protected String url = "http://"+urlMachineHost+":8090/libreplan";
 
+    // SQL
+    protected String databaseURL = "jdbc:postgresql://192.168.15.10:5432/libreplan";
+    protected String userDatabase = "libreplan";
+    protected String passwordDatabase = "secret";
+    protected Connection connection;
 
 
     @BeforeEach
     void startup() {
+        LOGGER.info("Setup Database connection");
+        try {
+            connection = outilsManipulationDonnee.connection(databaseURL, userDatabase, passwordDatabase);
+        } catch (SQLException e){
+            LOGGER.error("Error sql " + e);
+        }
 
         LOGGER.info("Setup Choix driver " + navigateur + " ...");
         switch (navigateur.toLowerCase()) {
@@ -72,6 +86,7 @@ public abstract class AbstractTestSelenium extends Logging {
         assertion = new Assertion(driver);
         snapshot = new Snapshot(driver);
         methodesProjet = new MethodesProjet(driver);
+        outilsProjet = new OutilsProjet(driver);
         LOGGER.info("instantiation des classes effectué");
 
     }

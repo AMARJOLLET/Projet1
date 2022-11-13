@@ -28,24 +28,24 @@ public class PageDetailProjet extends AbstractFullPage {
     // Onglet
     public List<WebElement> listOngletDetailProjet(WebDriverWait wait){
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "(//div[@class=\"z-window-embedded\" and not(contains(@style, 'display:none'))]//li//span)[1]")));
-        return driver.findElements(By.xpath("//div[@class=\"z-window-embedded\" and not(contains(@style, 'display:none'))]//li//span"));
+                "(//div[@class='z-window-embedded' and not(contains(@style, 'display:none'))]//li//span)[1]")));
+        return driver.findElements(By.xpath("//div[@class='z-window-embedded' and not(contains(@style, 'display:none'))]//li//span"));
     }
 
     //WBS
     public WebElement inputNouvelleTacheWBS(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text()='Nouvelle tâche']/ancestor::tr//input[@class='z-textbox']")));
+                "//div[@class='orderelements-tab z-tabpanel']//tr[@valign='middle']//input[@class='z-textbox']")));
     }
 
     public WebElement inputHeuresWBS(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text()='Nouvelle tâche']/ancestor::tr[1]//input[@class='z-intbox']")));
+                "//div[@class='orderelements-tab z-tabpanel']//tr[@valign='middle']//input[@class='z-intbox']")));
     }
 
     public WebElement boutonAjouterWBS(WebDriverWait wait){
         return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-                "//span[text()='Nouvelle tâche']/ancestor::tr[1]//td[text()='Ajouter']")));
+                "//div[@class='orderelements-tab z-tabpanel']//tr[@valign='middle']//td[text()='Ajouter']")));
     }
 
 
@@ -151,7 +151,7 @@ public class PageDetailProjet extends AbstractFullPage {
     public void remplirFormulaireWBS(WebDriverWait wait, String nouvelleTache, String heures) throws Throwable {
         LOGGER.info("Renseigne le nom de la nouvelle tache avec : " + nouvelleTache);
         seleniumTools.sendKey(wait, inputNouvelleTacheWBS(wait), nouvelleTache);
-        LOGGER.info("Renseigne le nombre d'heures avec : " + nouvelleTache);
+        LOGGER.info("Renseigne le nombre d'heures avec : " + heures);
         seleniumTools.sendKey(wait, inputHeuresWBS(wait), heures);
     }
 

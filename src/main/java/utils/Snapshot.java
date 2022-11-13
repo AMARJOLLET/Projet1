@@ -32,9 +32,4 @@ public class Snapshot extends InstanciationDriver {
         takeSnapShot(driver, snapFile);
         throw error;
     }
-
-    public void snapshotTst(String className) throws Throwable {
-        String snapFile = ".//target//snapshots//" + className + "//" + dateExecution + "_" + className + ".png";
-        takeSnapShot(driver, snapFile);
-    }
 }
