@@ -213,7 +213,7 @@ public class OutilsProjet extends InstanciationDriver {
 
     public void supressionJddAvecUtilisateur(WebDriverWait wait, Connection connection, String nom) throws Throwable {
         ResultSet rs = outilsManipulationDonnee.select(connection,
-                "select login_name from user_table where login_name='"+uppercaseOnlyFirstLetter(nom)+"' or login_name='jdu';");
+                "select user_id from worker where surname='"+nom+"';");
 
         WebElement boutonSupprimer = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
                 "//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']")));

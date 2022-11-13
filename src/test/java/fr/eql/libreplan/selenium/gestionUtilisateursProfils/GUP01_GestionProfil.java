@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GUP01_GestionProfil extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyage = "select profile_name from profile_table where profile_name in ('??','??');";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -59,8 +62,13 @@ public class GUP01_GestionProfil extends AbstractTestSelenium {
         assertion.verifyEquals("Actions", listLibelleTableauProfil.get(1),
                 "Le nom de la deuxième colonne n'est pas celle attendu");
 
-        LOGGER.info("Vérification de la présence de JDD");
-        pageConfigurationProfils.verificationNettoyageTableau(wait, nomProfil, nomProfil2);
+        LOGGER.info("PRE REQUIS DU TEST");
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyage = outilsManipulationDonnee.formatageQuery(queryNettoyage, nomProfil, nomProfil2);
+        LOGGER.info("Query setup " + queryNettoyage);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyage);
+        LOGGER.info("Reprise du cas de test");
+
 
         LOGGER.info("Pas de test 3 -- Créer un profil - Accès au formulaire de création");
         PageConfigurationProfilsCreer pageConfigurationProfilsCreer = pageConfigurationProfils.cliquerBoutonCreer(wait);

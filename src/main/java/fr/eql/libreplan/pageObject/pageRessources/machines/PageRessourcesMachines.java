@@ -127,27 +127,4 @@ public class PageRessourcesMachines extends AbstractFullPage {
         LOGGER.info("Récupération terminé");
         return listMapMachineTableau;
     }
-
-
-    // Nettoyage
-    public void supressionJdd(WebDriverWait wait,String nom) throws Throwable {
-        WebElement boutonSupprimer = driver.findElement(By.xpath("//span[text() = '" + nom + "']/ancestor::tr//span[@title='Supprimer']"));
-        seleniumTools.clickOnElement(wait, boutonSupprimer);
-        WebElement acceptSuppression = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class=\"z-window-modal-cl\"]//*[contains(text(), \"OK\")]")));
-        seleniumTools.clickOnElement(wait, acceptSuppression);
-    }
-
-    public void verificationNettoyageTableau(WebDriverWait wait, String idCommune,
-                                             String nom) throws Throwable {
-        LOGGER.info("Récupération valeurs du tableau");
-        Map<String, Map<String, String>> listValeurTableauMachines = recuperationValeurTableauMachine(idCommune);
-        LOGGER.info("Vérification de l'absence du JDD dans le tableau");
-        if(listValeurTableauMachines.containsKey(nom)){
-            LOGGER.info("Présence du JDD " + nom);
-            supressionJdd(wait, nom);
-            LOGGER.info("Suppression effectué");
-        }
-    }
-
-
 }

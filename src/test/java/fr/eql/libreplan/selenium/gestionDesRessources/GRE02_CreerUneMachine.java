@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GRE02_CreerUneMachine extends AbstractTestSelenium {
+    // QuerySQL
+    protected String queryNettoyage = "select name from machine where name='??';";
+
     // Chargement JDD
     protected List<Map<String, String>> listJdd = outilsProjet.loadCsvSeveralJDD(classPackage, className);
 
@@ -70,8 +73,14 @@ public class GRE02_CreerUneMachine extends AbstractTestSelenium {
                 "Le bouton créer n'est pas celui attendu");
 
         LOGGER.info("Pas de test 3 -- Créer une machine - Accès au formulaire de création ");
-        LOGGER.info("Vérification qu'il n'y a pas le JDD dans le tableau");
-        pageRessourcesMachines.verificationNettoyageTableau(wait, idCommune, nomMachine);
+
+        LOGGER.info("PRE REQUIS DU TEST");
+        LOGGER.info("Nettoyage si nécessaire");
+        queryNettoyage = outilsManipulationDonnee.formatageQuery(queryNettoyage, nomMachine);
+        LOGGER.info("Query setup " + queryNettoyage);
+        outilsProjet.verificationNettoyageTableau(wait, connection, queryNettoyage);
+        LOGGER.info("Reprise du cas de test");
+
         PageRessourcesMachinesCreer pageRessourcesMachinesCreer = pageRessourcesMachines.cliquerBoutonCreer(wait,idCommune);
         idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification du titre de la page et du titre du formulaire");

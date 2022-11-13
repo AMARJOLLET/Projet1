@@ -47,6 +47,8 @@ public class PROTA01_CreerUnProjet extends AbstractTestSelenium {
         String idCommune = outilsProjet.retournerIdCommune(wait);
         LOGGER.info("Vérification de l'absence du JDD");
         PageListeDesProjets pageListeDesProjets = pageCalendrierPlanification.cliquerOngletListeDesProjets(wait, idCommune);
+
+
         pageListeDesProjets.nettoyageJDD(wait, nomProjet);
         pageCalendrierPlanification = pageListeDesProjets.cliquerOngletPlanificationDesProjets(wait, idCommune);
         LOGGER.info("Vérification terminé");
