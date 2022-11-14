@@ -38,7 +38,7 @@ public abstract class AbstractTestSelenium extends Logging {
     protected MethodesProjet methodesProjet;
 
     // Variable
-    protected String navigateur = "firefox";
+    protected String navigateur = "chrome";
     protected String url = "http://"+urlMachineHost+":8090/libreplan";
 
     // SQL

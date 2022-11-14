@@ -8,22 +8,19 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Logging {
-    public String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH-mm-ss"));
+    public static String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH-mm-ss"));
     public Logger LOGGER;
     public String className = getClass().getSimpleName();
     public String pathLog4j2 = "src/main/resources/log4j2.xml";
     public String tempDir = "target/logs/temp";
-    public String tempName = "temp-" + date;
+    public static String tempName = "temp-" + date;
 
 
     public Logging() {
@@ -32,7 +29,7 @@ public class Logging {
         LOGGER = LoggerFactory.getLogger(className);
     }
 
-    public void setupLoggin(){
+    public void setupLogging(){
         File file = new File(pathLog4j2);
         LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
         context.setConfigLocation(file.toURI());
